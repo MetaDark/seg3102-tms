@@ -48,9 +48,7 @@ app.registerModule(function(E, data) {
           name: name.value,
           email: email.value
         }).then(function(response) {
-          console.log(response);
-        }, function(err) {
-          console.log('User already exists');
+          app.loadModule('login');
         });
       },
       parent: register
