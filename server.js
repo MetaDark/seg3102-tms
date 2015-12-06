@@ -22,6 +22,28 @@ app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
 /* Register User */
 app.put('/user', function(req, res) {
   var params = req.body;
+  var invalid = [];
+  if (!params.id)  {
+    invalid.push('id');
+  }
+
+  if (!params.password)  {
+    invalid.push('password');
+  }
+
+  if (!params.name)  {
+    invalid.push('name');
+  }
+
+  if (!params.email)  {
+    invalid.push('email');
+  }
+
+  if (invalid.length > 0) {
+    res.status(400).json({invalid: invalid});
+    return;
+  }
+  
   var query =
         'INSERT INTO users (id, password, salt, name, email) ' +
         'VALUES ($id, $password, $salt, $name, $email)';
@@ -31,7 +53,7 @@ app.put('/user', function(req, res) {
         crypto.createHash('sha256')
         .update(params.password + salt)
         .digest('binary');
-
+  
   db.run(query, {
     $id: params.id,
     $password: hashedPassword,
