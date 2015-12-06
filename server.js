@@ -17,10 +17,7 @@ app.use(session({
 }));
 
 app.use(express.static(__dirname + '/static'));
-
-// TODO: Use browserify
 app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
-app.use(express.static(__dirname + '/node_modules/jquery/dist'));
 
 /* Register User */
 app.put('/user', function(req, res) {
