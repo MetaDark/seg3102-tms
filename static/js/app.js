@@ -12,7 +12,6 @@ var app = (function(window, document, E, data) {
     
     function hashchange() {
       var id = window.location.hash.slice(1);
-      if (!id) id = defaultModule;
       app.loadModule(id, true);
     }
     
@@ -21,6 +20,8 @@ var app = (function(window, document, E, data) {
   };
   
   app.loadModule = function(id, replace) {
+    if (!id) id = moduleDefault;
+    
     // Cleanup the previous module
     document.body.innerHTML = '';
     moduleCSS.forEach(function(css) {

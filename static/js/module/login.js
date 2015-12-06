@@ -34,7 +34,7 @@ app.registerModule(function(E, data) {
           id: username.value,
           password: password.value
         }).then(function() {
-          app.loadModule('register');
+          app.loadModule('dashboard');
         }, function(err) {
           var input = null;
           switch (err.param) {
