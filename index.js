@@ -16,9 +16,7 @@ app.use(session({
   resave: false
 }));
 
-app.get('/', function(req, res) {
-  res.send('Send out single page app to user');
-});
+app.use(express.static(__dirname + '/static'));
 
 /* Register User */
 app.put('/user', function(req, res) {
