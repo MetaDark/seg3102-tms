@@ -27,13 +27,6 @@ app.module(function(E, ajax) {
           var loadDashbord = function() {
             box.parentElement.removeChild(box);
             app.load('dashboard');
-
-            if (container.animate) {
-              container.animate([
-                {opacity: 0},
-                {opacity: 1},
-              ], 200);
-            }
           };
 
           if (box.animate) {

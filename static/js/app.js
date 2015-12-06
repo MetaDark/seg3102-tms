@@ -57,11 +57,28 @@ var app = (function(window, document, E, ajax) {
 
   app.module = function(register) {
     var module = register(E, ajax);
+
+    var display = function() {
+      module.display(moduleContainer);
+      if (moduleContainer.animate) {
+        moduleContainer.animate([
+          {opacity: 0},
+          {opacity: 1},
+        ], 200);
+      }
+    };
+    
     if (module.css) {
       var numLeft = module.css.length;
-      var cssLoaded = function() {
+      var cssLoaded = function(css, sucess) {
+        if (success) {
+          moduleCSS.push(css);
+        } else {
+          document.head.removeChild(css);
+        }
+        
         if (--numLeft === 0) {
-          module.display(moduleContainer);
+          display();
         }
       };
       
@@ -71,18 +88,12 @@ var app = (function(window, document, E, ajax) {
           rel: 'stylesheet',
           type: 'text/css',
           parent: document.head,
-          onload: function() {
-            moduleCSS.push(css);
-            cssLoaded();
-          },
-          onerror: function() {
-            document.head.removeChild(css);
-            cssLoaded();
-          }
+          onload: cssLoaded.bind(null, css, true),
+          onerror: cssLoaded.bind(null, css, false)
         });
       });
     } else {
-      module.display(moduleContainer);
+      display();
     }
     
     currentModule = module;
