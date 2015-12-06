@@ -20,7 +20,7 @@ function form(params) {
       parent: form
     });
 
-    var field = E('input', {
+    var elem = E('input', {
       id: input.id,
       className: ['form-control', input.className],
       type: input.type || 'text',
@@ -34,7 +34,7 @@ function form(params) {
         if (e.keyCode == 13) {
           var next = inputs[i + 1];
           if (next) {
-            next.field.focus();
+            next.elem.focus();
           } else {
             submit.click();
           }
@@ -42,43 +42,47 @@ function form(params) {
       }
     });
 
-    inputs.push({
-      name: input.name,
+    var obj = {
+      param: input.param,
       group: group,
-      field: field
-    });
+      elem: elem
+    };
 
-    inputMap[params.name];
+    inputs.push(obj);
+    inputMap[input.param] = obj;
   });
 
   var submit = E('input', {
-    className: 'btn btn-primary btn-block',
+    id: params.submit.id,
+    className: ['btn btn-primary btn-block',
+                params.submit.className],
     type: 'button',
-    value: 'Login',
+    value: params.submit.label,
     parent: form
   });
 
   var promise = new Promise(function(resolve, reject) {
     submit.onclick = function() {
-      var obj = {};
+      var data = {};
       inputs.forEach(function(input) {
-        obj[input.name] = input.field.value;
+        data[input.param] = input.elem.value;
       });
 
-      data[params.method || 'post'](params.action, obj)
+      ajax[params.method || 'post'](params.action, data)
         .then(resolve, function(err) {
-          if (!err.invalid) {
+          var invalid = err.invalid;
+          if (!invalid) {
             reject(err);
             return;
           }
 
           var focused = false;
-          err.params.forEach(function(param) {
+          invalid.forEach(function(param) {
             var input = inputMap[param];
             if (input) {
               input.group.classList.add('has-error');
               if (!focused) {
-                input.field.focus();
+                input.elem.focus();
                 focused = true;
               }
             }
