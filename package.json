@@ -1,0 +1,21 @@
+{
+  "name": "tms",
+  "version": "1.0.0",
+  "description": "Team Management System",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "sqlite3": "^3.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kurt Bruneau",
+  "contributors": [
+    "Connor Vacheresse",
+    "Anadi Misra"
+  ],
+  "license": "GPL-3.0"
+}
