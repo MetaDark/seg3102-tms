@@ -16,12 +16,17 @@ var data = (function () {
   function request(method, url, obj) {
     var promise = new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest();
-      xhr.addEventListener('load', function() {
+      xhr.addEventListener('load', function(e) {
+        var next = this.status === 200 ? resolve : reject;
         var response = this.responseText;
         if (!response) {
-          resolve();
+          next();
         } else {
-          resolve(JSON.parse(this.responseText));
+          try {
+            next(JSON.parse(response));
+          } catch (e) {
+            next(response);
+          }
         }
       });
       
