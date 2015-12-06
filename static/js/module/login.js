@@ -1,6 +1,6 @@
 'use strict';
 
-app.registerModule(function(E, ajax) {
+app.module(function(E, ajax) {
   var module = {};
 
   module.display = function(container) {
@@ -20,7 +20,7 @@ app.registerModule(function(E, ajax) {
       },
       parent: container
     }).then(function() {
-      app.loadModule('dashboard');
+      app.load('dashboard');
     });
 
     form({

@@ -1,6 +1,6 @@
 'use strict';
 
-app.registerModule(function(E, ajax) {
+app.module(function(E, ajax) {
   var module = {};
 
   module.display = function(container) {
@@ -14,7 +14,7 @@ app.registerModule(function(E, ajax) {
       var classes = data[2];
       console.log(teams, projects, classes);
     }, function() {
-      app.loadModule('login');
+      app.load('login');
     });
   };
 

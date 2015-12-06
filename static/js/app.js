@@ -6,20 +6,21 @@ var app = (function(window, document, E, ajax) {
   var moduleContainer = null;
   var moduleDefault = 'login';
   var moduleCSS = [];
+  var currentModule = null;
 
   app.start = function() {
     moduleContainer = document.body;
     
     function hashchange() {
       var id = window.location.hash.slice(1);
-      app.loadModule(id, true);
+      app.load(id);
     }
     
     window.addEventListener('hashchange', hashchange, false);
     hashchange();
   };
   
-  app.loadModule = function(id, replace) {
+  app.load = function(id) {
     if (!id) id = moduleDefault;
     
     // Cleanup the previous module
@@ -30,7 +31,7 @@ var app = (function(window, document, E, ajax) {
     
     moduleCSS = [];
     
-    if (replace) {
+    if (!currentModule) {
       history.replaceState(null, null, '#' + id);
     } else {
       history.pushState(null, null, '#' + id);
@@ -54,7 +55,7 @@ var app = (function(window, document, E, ajax) {
     });
   };
 
-  app.registerModule = function(register) {
+  app.module = function(register) {
     var module = register(E, ajax);
     if (module.css) {
       var numLeft = module.css.length;
@@ -83,6 +84,8 @@ var app = (function(window, document, E, ajax) {
     } else {
       module.display(moduleContainer);
     }
+    
+    currentModule = module;
   };
   
   return app;
