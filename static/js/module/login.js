@@ -4,6 +4,11 @@ app.module(function(E, ajax) {
   var module = {};
 
   module.display = function(container) {
+    var box = E('div', {
+      className: 'box',
+      parent: container
+    });
+
     var login = form({
       title: 'Login',
       action: 'login',
@@ -19,10 +24,33 @@ app.module(function(E, ajax) {
       submit: {
         label: 'Login',
         then: function() {
-          app.load('dashboard');
+          var loadDashbord = function() {
+            box.parentElement.removeChild(box);
+            app.load('dashboard');
+
+            if (container.animate) {
+              container.animate([
+                {opacity: 0},
+                {opacity: 1},
+              ], 200);
+            }
+          };
+
+          if (box.animate) {
+            var animation = box.animate([
+              {opacity: 1, transform: 'translateX(0px)'},
+              {opacity: 0, transform: 'translateX(-500px)'},
+            ], 200);
+
+            animation.onfinish = function() {
+              loadDashbord();
+            };
+          } else {
+            loadDashbord();
+          }
         }
       },
-      parent: container
+      parent: box
     });
 
     var register = form({
@@ -46,7 +74,7 @@ app.module(function(E, ajax) {
       submit: {
         label: 'Register'
       },
-      parent: container
+      parent: box
     });
   }
 
