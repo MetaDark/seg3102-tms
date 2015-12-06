@@ -80,3 +80,5 @@ var element = (function(window, document) {
 
   return element;
 })(window, document);
+
+var E = element.html;

@@ -61,9 +61,7 @@ app.post('/login', function(req, res) {
     }
 
     if (users.length === 0)  {
-      res.status(400).json({
-        param: 'username'
-      });
+      res.status(400).json({invalid: ['username']});
       return;
     }
 
@@ -74,9 +72,7 @@ app.post('/login', function(req, res) {
           .digest('binary');
 
     if (hashedPassword !== user.password) {
-      res.status(400).json({
-        param: 'password'
-      });
+      res.status(400).json({invalid: ['password']});
       return;
     }
 
