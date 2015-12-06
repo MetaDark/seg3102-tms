@@ -1,6 +1,6 @@
 'use strict';
 
-var data = (function () {
+var ajax = (function () {
   function urlencode(obj) {
     var arr = [];
     for (var key in obj) {

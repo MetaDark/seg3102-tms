@@ -1,6 +1,6 @@
 'use strict';
 
-var app = (function(window, document, E, data) {
+var app = (function(window, document, E, ajax) {
   var app = {};
   
   var moduleContainer = null;
@@ -55,7 +55,7 @@ var app = (function(window, document, E, data) {
   };
 
   app.registerModule = function(register) {
-    var module = register(E, data);
+    var module = register(E, ajax);
     if (module.css) {
       var numLeft = module.css.length;
       function cssLoaded() {
@@ -86,4 +86,4 @@ var app = (function(window, document, E, data) {
   };
   
   return app;
-})(window, document, element.html, data);
+})(window, document, E, ajax);

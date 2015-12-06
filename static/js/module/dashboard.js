@@ -1,13 +1,13 @@
 'use strict';
 
-app.registerModule(function(E, data) {
+app.registerModule(function(E, ajax) {
   var module = {};
 
   module.display = function(container) {
     Promise.all([
-      data.get('teams'),
-      data.get('projects'),
-      data.get('classes')
+      ajax.get('teams'),
+      ajax.get('projects'),
+      ajax.get('classes')
     ]).then(function(data) {
       var teams = data[0];
       var projects = data[1];
