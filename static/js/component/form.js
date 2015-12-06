@@ -65,7 +65,7 @@ function form(params) {
       });
 
       ajax[params.method || 'post'](params.action, data)
-        .then(params.then, function(err) {
+        .then(params.submit.then, function(err) {
           var invalid = err.invalid;
           if (!invalid) {
             if (params.catch) {

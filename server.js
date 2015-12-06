@@ -83,7 +83,7 @@ app.post('/login', function(req, res) {
     }
 
     if (users.length === 0)  {
-      res.status(400).json({invalid: ['username']});
+      res.status(400).json({invalid: ['id']});
       return;
     }
 
