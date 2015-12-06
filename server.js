@@ -75,6 +75,11 @@ app.put('/user', function(req, res) {
 
 /* Instructor Login / Student Login */
 app.post('/login', function(req, res) {
+  // Temporary hack to always login as me
+  req.session.userId = '7238982';
+  res.send();
+  return;
+  
   var params = req.body;
   var query = 'SELECT id, password, salt FROM users WHERE id = $id';
   db.all(query, {
