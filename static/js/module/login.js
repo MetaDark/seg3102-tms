@@ -4,13 +4,21 @@ app.module(function(E, ajax) {
   var module = {};
 
   module.display = function(container) {
-    var box = E('div', {
-      className: 'box',
+    var loginModal = E('div', {
+      className: 'login modal-dialog',
       parent: container
     });
 
+    var modalContent = E('div', {
+      className: 'login-content modal-content',
+      parent: loginModal,
+    });
+
+    var tabs = new Tabs({
+      parent: modalContent
+    });
+
     var login = form({
-      title: 'Login',
       action: 'login',
       method: 'post',
       inputs: [{
@@ -25,15 +33,15 @@ app.module(function(E, ajax) {
         label: 'Login',
         then: function() {
           var loadDashbord = function() {
-            box.parentElement.removeChild(box);
+            loginModal.parentElement.removeChild(loginModal);
             app.load('dashboard');
           };
 
-          if (box.animate) {
-            var animation = box.animate([
+          if (loginModal.animate) {
+            var animation = loginModal.animate([
               {opacity: 1, transform: 'translateX(0px)'},
               {opacity: 0, transform: 'translateX(-500px)'},
-            ], 200);
+            ], 150);
 
             animation.onfinish = function() {
               loadDashbord();
@@ -42,12 +50,12 @@ app.module(function(E, ajax) {
             loadDashbord();
           }
         }
-      },
-      parent: box
+      }
     });
 
+    tabs.add('Login', login);
+
     var register = form({
-      title: 'Register',
       action: 'user',
       method: 'put',
       inputs: [{
@@ -65,10 +73,14 @@ app.module(function(E, ajax) {
         label: 'Email'
       }],
       submit: {
-        label: 'Register'
-      },
-      parent: box
+        label: 'Register',
+        then: function() {
+          tabs.focus('Login');
+        }
+      }
     });
+
+    tabs.add('Register', register);
   }
 
   return module;

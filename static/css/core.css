@@ -1,4 +1,32 @@
-.form {
-    width: 300px;
-    margin: 0 auto;
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.login {
+    width: 400px;
+    margin: 0;
+}
+
+.login-content {
+    padding: 30px;
+}
+
+.dashboard {
+    width: 80%;
+    margin: 0;
+}
+
+.dashboard-content {
+    padding: 30px;
+}
+
+.nav-tabs {
+    display: flex;
+    font-size: 16px;
+    justify-content: center;
+    margin-top: -20px;
+    margin-bottom: 10px;
 }
