@@ -1,12 +1,20 @@
 var sqlite3 = require('sqlite3');
 var db = new sqlite3.Database('db/db.sqlite3');
+
 var crypto = require('crypto');
+var session = require('express-session');
 
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
+app.use(session({
+  secret: 'super secret',
+  name: 'tms_session',
+  saveUninitialized: false,
+  resave: false
+}));
 
 app.get('/', function(req, res) {
   res.send('Send out single page app to user');
@@ -69,13 +77,14 @@ app.post('/login', function(req, res) {
       return;
     }
 
+    req.session.id = user.id;
     res.send();
   });
 });
 
 /* Instructor Logout / Student Logout */
 app.post('/logout', function(req, res) {
-  res.send('Logout');
+  req.session.destroy();
 });
 
 /* Create Project */
