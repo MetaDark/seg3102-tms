@@ -48,7 +48,7 @@ CREATE TABLE team_members (
 
 /* == Dummy Data == */
 INSERT INTO users (id, password, salt, name, email)
-    VALUES('instructor', 'test', '', 'Instructor', 'instructor@uottawa.ca');
+    VALUES('instructor', '', '', 'Instructor', 'instructor@uottawa.ca');
 
 INSERT INTO classes (id, instructor_id, name)
     VALUES('SEG3102A', 'instructor', 'SEG3102 Software Design and Architecture');
@@ -57,7 +57,7 @@ INSERT INTO projects (name, class_id)
     VALUES('TMS', 'SEG3102A');
 
 INSERT INTO users (id, password, salt, name, email)
-    VALUES('7238982', 'test', '', 'Kurt Bruneau', 'kbrun08@uottawa.ca');
+    VALUES('7238982', '', '', 'Kurt Bruneau', 'kbrun08@uottawa.ca');
 
 INSERT INTO class_members (class_id, member_id)
     VALUES('SEG3102A', '7238982');
