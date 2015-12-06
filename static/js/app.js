@@ -10,11 +10,11 @@ var app = (function(window, document, E, ajax) {
 
   app.start = function() {
     moduleContainer = document.body;
-    
-    function hashchange() {
+
+    var hashchange = function() {
       var id = window.location.hash.slice(1);
       app.load(id);
-    }
+    };
     
     window.addEventListener('hashchange', hashchange, false);
     hashchange();
@@ -59,11 +59,11 @@ var app = (function(window, document, E, ajax) {
     var module = register(E, ajax);
     if (module.css) {
       var numLeft = module.css.length;
-      function cssLoaded() {
+      var cssLoaded = function() {
         if (--numLeft === 0) {
           module.display(moduleContainer);
         }
-      }
+      };
       
       module.css.forEach(function(href) {
         var css = E('link', {
