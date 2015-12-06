@@ -58,21 +58,19 @@ function form(params) {
                 params.submit.className],
     type: 'button',
     value: params.submit.label,
-    parent: form
-  });
-
-  var promise = new Promise(function(resolve, reject) {
-    submit.onclick = function() {
+    onclick: function() {
       var data = {};
       inputs.forEach(function(input) {
         data[input.param] = input.elem.value;
       });
 
       ajax[params.method || 'post'](params.action, data)
-        .then(resolve, function(err) {
+        .then(params.then, function(err) {
           var invalid = err.invalid;
           if (!invalid) {
-            reject(err);
+            if (params.catch) {
+              params.catch(err);
+            }
             return;
           }
 
@@ -88,8 +86,9 @@ function form(params) {
             }
           });
         });
-    };
+    },
+    parent: form
   });
 
-  return promise;
+  return form;
 }

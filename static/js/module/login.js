@@ -4,29 +4,31 @@ app.module(function(E, ajax) {
   var module = {};
 
   module.display = function(container) {
-    form({
+    var login = form({
+      title: 'Login',
       action: 'login',
       method: 'post',
-      title: 'Login',
       inputs: [{
         param: 'id',
         label: 'Username'
       }, {
         param: 'password',
-        label: 'Password'
+        label: 'Password',
+        type: 'password'
       }],
       submit: {
-        label: 'Login'
+        label: 'Login',
+        then: function() {
+          app.load('dashboard');
+        }
       },
       parent: container
-    }).then(function() {
-      app.load('dashboard');
     });
 
-    form({
+    var register = form({
+      title: 'Register',
       action: 'user',
       method: 'put',
-      title: 'Register',
       inputs: [{
         param: 'id',
         label: 'Username'
@@ -42,11 +44,9 @@ app.module(function(E, ajax) {
         label: 'Email'
       }],
       submit: {
-        label: 'Login'
+        label: 'Register'
       },
       parent: container
-    }).then(function() {
-      console.log('register');
     });
   }
 
