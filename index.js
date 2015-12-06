@@ -79,7 +79,7 @@ app.post('/login', function(req, res) {
       return;
     }
 
-    req.session.id = user.id;
+    req.session.userId = user.id;
     res.send();
   });
 });
@@ -90,34 +90,73 @@ app.post('/logout', function(req, res) {
   res.send();
 });
 
-/* Create Project */
-app.put('/project', function(req, res) {
-  res.send();
+app.get('/classes', function(req, res) {
+  if (!req.session.userId) {
+    res.status(401).send();
+    return;
+  }
+
+  res.send('classes');
 });
 
-/* Setup Parameters */
+/* Create Project */
+app.put('/project', function(req, res) {
+  if (!req.session.userId) {
+    res.status(401).send();
+    return;
+  }
+
+  res.send('create project');
+});
+
+/* Update Project */
 app.post('/project', function(req, res) {
-  res.send('Setup parameters');
+  if (!req.session.userId) {
+    res.status(401).send();
+    return;
+  }
+
+  res.send('update project');
 });
 
 /* List projects */
-app.post('/project', function(req, res) {
+app.get('/projects', function(req, res) {
+  if (!req.session.userId) {
+    res.status(401).send();
+    return;
+  }
+
   res.send('Setup parameters');
 });
 
-/* Visualize Student Teams */
-app.get('/teams', function(req, res) {
-  res.send('List teams');
-});
-
-// Create Team
+/* Create Team */
 app.put('/team', function(req, res) {
+  if (!req.session.userId) {
+    res.status(401).send();
+    return;
+  }
+
   res.send('Team created');
 });
 
-// Join Team / Accept New Students
+/* Update Team */
 app.post('/team', function(req, res) {
+  if (!req.session.userId) {
+    res.status(401).send();
+    return;
+  }
+
   res.send('Manage single team');
+});
+
+/* List Teams */
+app.get('/teams', function(req, res) {
+  if (!req.session.userId) {
+    res.status(401).send();
+    return;
+  }
+
+  res.send('List teams');
 });
 
 var server = app.listen(3000, function() {
