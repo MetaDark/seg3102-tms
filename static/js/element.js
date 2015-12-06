@@ -25,7 +25,9 @@ var element = (function(window, document) {
 
     if (params.children) {
       var fragment = document.createDocumentFragment();
-      params.children.forEach(fragment.appendChild);
+      params.children.forEach(function(child) {
+        fragment.appendChild(child);
+      });
       elem.appendChild(fragment);
       delete params.children;
     }
