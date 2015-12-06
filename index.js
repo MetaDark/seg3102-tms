@@ -60,7 +60,7 @@ app.post('/login', function(req, res) {
     }
 
     if (users.length === 0)  {
-      res.status(401).json({error: 'invalid username'});
+      res.status(401).json({error: 'Invalid username'});
       return;
     }
 
@@ -71,7 +71,7 @@ app.post('/login', function(req, res) {
           .digest('binary');
 
     if (hashedPassword !== user.password) {
-      res.status(401).send({error: 'invalid password'});
+      res.status(401).json({error: 'Invalid password'});
       return;
     }
 
@@ -83,11 +83,12 @@ app.post('/login', function(req, res) {
 /* Instructor Logout / Student Logout */
 app.post('/logout', function(req, res) {
   req.session.destroy();
+  res.send();
 });
 
 /* Create Project */
 app.put('/project', function(req, res) {
-
+  res.send();
 });
 
 /* Setup Parameters */
