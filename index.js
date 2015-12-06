@@ -39,7 +39,7 @@ app.put('/user', function(req, res) {
     $email: params.email
   }, function(err) {
     if (err) {
-      res.status(500).json({error: err});
+      res.status(500).json(err);
       return;
     }
 
@@ -55,12 +55,14 @@ app.post('/login', function(req, res) {
     $id: params.id
   }, function(err, users) {
     if (err) {
-      res.status(500).json({error: err});
-      return
+      res.status(500).json(err);
+      return;
     }
 
     if (users.length === 0)  {
-      res.status(401).json({error: 'Invalid username'});
+      res.status(400).json({
+        param: 'username'
+      });
       return;
     }
 
@@ -71,7 +73,9 @@ app.post('/login', function(req, res) {
           .digest('binary');
 
     if (hashedPassword !== user.password) {
-      res.status(401).json({error: 'Invalid password'});
+      res.status(400).json({
+        param: 'password'
+      });
       return;
     }
 

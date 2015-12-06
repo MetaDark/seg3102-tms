@@ -9,6 +9,11 @@ app.registerModule(function(E, data) {
       parent: container
     });
 
+    E('h2', {
+      textContent: 'Login',
+      parent: login
+    });
+
     var username = E('input', {
       type: 'text',
       placeholder: 'Username',
@@ -31,7 +36,20 @@ app.registerModule(function(E, data) {
         }).then(function() {
           app.loadModule('register');
         }, function(err) {
-          console.log(err);
+          var input = null;
+          switch (err.param) {
+          case 'username':
+            input = username;
+            break;
+          case 'password':
+            input = password;
+            break;
+          }
+
+          if (input) {
+            input.classList.add('invalid');
+            input.focus();
+          }
         });
       },
       parent: login
