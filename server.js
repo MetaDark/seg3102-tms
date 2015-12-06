@@ -118,7 +118,22 @@ app.get('/classes', function(req, res) {
     return;
   }
 
-  res.send('classes');
+  var query =
+        'SELECT classes.* ' +
+        'FROM classes, class_members WHERE ' +
+        'class_members.member_id = $user_id AND ' +
+        'class_members.class_id = classes.id';
+
+  db.all(query, {
+    $user_id: req.session.userId
+  }, function(err, classes) {
+    if (err) {
+      res.status(500).json(err);
+      return;
+    }
+
+    res.json(classes);
+  });
 });
 
 /* Create Project */
@@ -148,7 +163,24 @@ app.get('/projects', function(req, res) {
     return;
   }
 
-  res.send('Setup parameters');
+  var query =
+        'SELECT projects.* ' +
+        'FROM projects, classes WHERE ' +
+        'classes.instructor_id = $user_id AND ' +
+        'classes.id = projects.class_id';
+
+  db.all(query, {
+    $user_id: req.session.userId
+  }, function(err, classes) {
+    if (err) {
+      console.log(query);
+      console.log(err);
+      res.status(500).json(err);
+      return;
+    }
+
+    res.json(classes);
+  });
 });
 
 /* Create Team */
@@ -178,7 +210,23 @@ app.get('/teams', function(req, res) {
     return;
   }
 
-  res.send('List teams');
+
+  var query =
+        'SELECT teams.* ' +
+        'FROM teams, team_members WHERE ' +
+        'team_members.member_id = $user_id AND ' +
+        'team_members.team_id = teams.id';
+
+  db.all(query, {
+    $user_id: req.session.userId
+  }, function(err, classes) {
+    if (err) {
+      res.status(500).json(err);
+      return;
+    }
+
+    res.json(classes);
+  });
 });
 
 var server = app.listen(3000, function() {
