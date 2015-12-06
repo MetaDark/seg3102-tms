@@ -1,6 +1,20 @@
 'use strict';
 
 var element = (function(window, document) {
+  var element = {};
+
+  element.html = function(tagName, params) {
+    var elem = document.createElement(tagName);
+    loadParams(elem, params);
+    return elem;
+  };
+
+  element.svg = function(tagName, params) {
+    var elem = document.createElementNS('http://www.w3.org/2000/svg', tagName);
+    loadParams(elem, params);
+    return elem;
+  };
+
   function loadParams(elem, params) {
     if (!params) return;
 
@@ -64,16 +78,5 @@ var element = (function(window, document) {
     }
   }
 
-  return {
-    html: function(tagName, params) {
-      var elem = document.createElement(tagName);
-      loadParams(elem, params);
-      return elem;
-    },
-    svg: function(tagName, params) {
-      var elem = document.createElementNS('http://www.w3.org/2000/svg', tagName);
-      loadParams(elem, params);
-      return elem;
-    }
-  }
+  return element;
 })(window, document);
