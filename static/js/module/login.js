@@ -3,7 +3,7 @@
 app.registerModule(function(E, data) {
   var module = {};
 
-  module.display = function(container) {
+  function login(container) {
     var login = E('div', {
       className: 'form',
       parent: container
@@ -54,6 +54,67 @@ app.registerModule(function(E, data) {
       },
       parent: login
     });
+
+    return login;
+  }
+
+  function register(container) {
+    var register = E('div', {
+      className: 'form',
+      parent: container
+    });
+
+    E('h2', {
+      textContent: 'Register',
+      parent: register
+    });
+
+    var username = E('input', {
+      type: 'text',
+      placeholder: 'Username',
+      parent: register
+    });
+
+    var password = E('input', {
+      type: 'password',
+      placeholder: 'Password',
+      parent: register
+    });
+
+    var name = E('input', {
+      type: 'text',
+      placeholder: 'Name',
+      parent: register
+    });
+
+    var email = E('input', {
+      type: 'text',
+      placeholder: 'Email',
+      parent: register
+    });
+
+    var submit = E('input', {
+      type: 'button',
+      value: 'Register',
+      onclick: function() {
+        data.put('user', {
+          id: username.value,
+          password: password.value,
+          name: name.value,
+          email: email.value
+        }).then(function(response) {
+          console.log('switch to login');
+        });
+      },
+      parent: register
+    });
+
+    return register;
+  };
+
+  module.display = function(container) {
+    login(container);
+    register(container);
   }
 
   return module;

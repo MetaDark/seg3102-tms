@@ -4,7 +4,7 @@ var app = (function(window, document, E, data) {
   var app = {};
   
   var moduleContainer = null;
-  var moduleDefault = 'register';
+  var moduleDefault = 'login';
   var moduleCSS = [];
 
   app.start = function() {
