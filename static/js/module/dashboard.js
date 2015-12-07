@@ -100,7 +100,16 @@ app.module(function(E, ajax) {
       textContent: 'Edit Project',
       onclick: function() {
         ajax.post('project').then(function(response) {
-          console.log(response);
+          var modal = new Modal({
+            title: 'Edit Project'
+          });
+
+          E('div', {
+            textContent: 'Hello',
+            parent: modal.body
+          });
+
+          modal.open();
         });
       },
       parent: section
