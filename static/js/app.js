@@ -49,7 +49,8 @@ var app = (function(window, document, E, ajax) {
         type: 'text/javascript',
         parent: document.head,
         onload: function() {
-          document.head.removeChild(script);
+          document.head.removeChild(this);
+          this.onload = false;
         },
         onerror: function() {
           E('h1', {
@@ -64,7 +65,8 @@ var app = (function(window, document, E, ajax) {
             ], 150);
           }
           
-          document.head.removeChild(script);
+          document.head.removeChild(this);
+          this.onerror = false;
         }
       });
     };
@@ -117,10 +119,12 @@ var app = (function(window, document, E, ajax) {
           type: 'text/css',
           parent: document.head,
           onload: function() {
-            cssLoaded(css, true);
+            cssLoaded(this, true);
+            this.onload = null;
           },
           onerror: function() {
-            cssLoaded(css, false);
+            cssLoaded(this, false);
+            this.onerror = null;
           }
         });
       });
