@@ -11,6 +11,12 @@ app.module(function(E, ajax) {
       parent: container
     });
 
+    E('h2', {
+      className: 'login-title',
+      textContent: 'TMS',
+      parent: loginModal
+    });
+
     var modalContent = E('div', {
       className: 'login-content modal-content',
       parent: loginModal,

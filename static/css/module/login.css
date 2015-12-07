@@ -10,6 +10,12 @@ body {
     margin: 0;
 }
 
+.login-title {
+    text-align: center;
+    margin-top: -200px;
+    margin-bottom: 30px;
+}
+
 .login-content {
     padding: 30px;
 }
