@@ -175,8 +175,6 @@ app.get('/projects', function(req, res) {
     $user_id: req.session.userId
   }, function(err, classes) {
     if (err) {
-      console.log(query);
-      console.log(err);
       res.status(500).json(err);
       return;
     }
