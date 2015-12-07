@@ -77,7 +77,7 @@ var app = (function(window, document, E, ajax) {
     
     if (module.css) {
       var numLeft = module.css.length;
-      var cssLoaded = function(css, sucess) {
+      var cssLoaded = function(css, success) {
         if (success) {
           moduleCSS.push(css);
         } else {
@@ -95,8 +95,12 @@ var app = (function(window, document, E, ajax) {
           rel: 'stylesheet',
           type: 'text/css',
           parent: document.head,
-          onload: cssLoaded.bind(null, css, true),
-          onerror: cssLoaded.bind(null, css, false)
+          onload: function() {
+            cssLoaded(css, true);
+          },
+          onerror: function() {
+            cssLoaded(css, false);
+          }
         });
       });
     } else {
