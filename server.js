@@ -114,6 +114,7 @@ app.post('/ajax/logout', function(req, res) {
   res.send();
 });
 
+/* Obtain list of classes that user is a member of */
 app.get('/ajax/classes', function(req, res) {
   if (!req.session.userId) {
     res.status(401).send();
@@ -178,14 +179,14 @@ app.put('/ajax/project', function(req, res) {
   });
 });
 
-/* Update Project */
+/* Edit Project */
 app.post('/ajax/project', function(req, res) {
   if (!req.session.userId) {
     res.status(401).send();
     return;
   }
 
-  res.send('update project');
+  res.send('Edit project');
 });
 
 /* List projects */
@@ -223,14 +224,34 @@ app.put('/ajax/team', function(req, res) {
   res.send('Team created');
 });
 
-/* Update Team */
+/* Edit Team */
 app.post('/ajax/team', function(req, res) {
   if (!req.session.userId) {
     res.status(401).send();
     return;
   }
 
-  res.send('Manage single team');
+  res.send('Edit team');
+});
+
+/* Join Team */
+app.post('/ajax/team/join', function(req, res) {
+  if (!req.session.userId) {
+    res.status(401).send();
+    return;
+  }
+
+  res.send('Joined Team');
+});
+
+/* Leave Team */
+app.post('/ajax/team/leave', function(req, res) {
+  if (!req.session.userId) {
+    res.status(401).send();
+    return;
+  }
+  
+  res.send('Left Team');
 });
 
 /* List Teams */
@@ -239,7 +260,6 @@ app.get('/ajax/teams', function(req, res) {
     res.status(401).send();
     return;
   }
-
 
   var query =
         'SELECT teams.* ' +

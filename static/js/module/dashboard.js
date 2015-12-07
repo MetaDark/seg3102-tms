@@ -192,12 +192,22 @@ app.module(function(E, ajax) {
     E('div', {
       className: 'btn btn-default',
       textContent: 'Join Team',
+      onclick: function() {
+        ajax.post('team/join').then(function(response) {
+          console.log(response);
+        });
+      },
       parent: section
     });
 
     E('div', {
       className: 'btn btn-default',
       textContent: 'Leave Team',
+      onclick: function() {
+        ajax.post('team/leave').then(function(response) {
+          console.log(response);
+        });
+      },
       parent: section
     });
 
