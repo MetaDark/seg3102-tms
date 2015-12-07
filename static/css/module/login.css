@@ -1,0 +1,23 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.login {
+    width: 400px;
+    margin: 0;
+}
+
+.login-content {
+    padding: 30px;
+}
+
+.nav-tabs {
+    display: flex;
+    font-size: 16px;
+    justify-content: center;
+    margin-top: -20px;
+    margin-bottom: 10px;
+}

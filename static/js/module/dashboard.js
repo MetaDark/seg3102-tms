@@ -1,24 +1,16 @@
 'use strict';
 
 app.module(function(E, ajax) {
-  var module = {};
+  var module = {
+    css: ['css/module/dashboard.css']
+  };
 
   module.display = function(container) {
-    var modal = E('div', {
-      className: 'dashboard modal-dialog',
-      parent: container
-    });
-
-    var content = E('div', {
-      className: 'dashboard-content modal-content',
-      parent: modal,
-    });
-
-    navbar(content);
+    navbar(container);
 
     var body = E('div', {
       className: 'modal-body',
-      parent: content
+      parent: container
     });
 
     ajax.get('classes').then(function(classes) {

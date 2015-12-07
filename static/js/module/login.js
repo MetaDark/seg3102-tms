@@ -1,7 +1,9 @@
 'use strict';
 
 app.module(function(E, ajax) {
-  var module = {};
+  var module = {
+    css: ['css/module/login.css']
+  };
 
   module.display = function(container) {
     var loginModal = E('div', {
