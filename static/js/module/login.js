@@ -41,8 +41,8 @@ app.module(function(E, ajax) {
 
           if (loginModal.animate) {
             var animation = loginModal.animate([
-              {opacity: 1, transform: 'translateX(0px)'},
-              {opacity: 0, transform: 'translateX(-500px)'},
+              {transform: 'translateX(0px)'},
+              {transform: 'translateX(-500px)'},
             ], 150);
 
             animation.onfinish = function() {

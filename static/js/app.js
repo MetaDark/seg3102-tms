@@ -22,44 +22,59 @@ var app = (function(window, document, E, ajax) {
   
   app.load = function(id) {
     if (!id) id = moduleDefault;
-    
-    // Cleanup the previous module
-    document.body.innerHTML = '';
-    moduleCSS.forEach(function(css) {
-      document.head.removeChild(css);
-    });
-    
-    moduleCSS = [];
 
-    if (!currentModule) {
-      history.replaceState(null, null, '#' + id);
-    } else {
-      history.pushState(null, null, '#' + id);
-    }
-    
-    var script = E('script', {
-      src: 'js/module/' + id + '.js',
-      type: 'text/javascript',
-      parent: document.head,
-      onload: function() {
-        document.head.removeChild(script);
-      },
-      onerror: function() {
-        E('h1', {
-          textContent: 'Page not found!',
-          parent: moduleContainer
-        });
+    var load = function() {
+      // Cleanup the previous module
+      document.body.innerHTML = '';
+      moduleCSS.forEach(function(css) {
+        document.head.removeChild(css);
+      });
+      
+      moduleCSS = [];
 
-        if (moduleContainer.animate) {
-          moduleContainer.animate([
-            {opacity: 0},
-            {opacity: 1},
-          ], 200);
-        }
-        
-        document.head.removeChild(script);
+      if (!currentModule) {
+        history.replaceState(null, null, '#' + id);
+      } else {
+        history.pushState(null, null, '#' + id);
       }
-    });
+      
+      var script = E('script', {
+        src: 'js/module/' + id + '.js',
+        type: 'text/javascript',
+        parent: document.head,
+        onload: function() {
+          document.head.removeChild(script);
+        },
+        onerror: function() {
+          E('h1', {
+            textContent: 'Page not found!',
+            parent: moduleContainer
+          });
+
+          if (moduleContainer.animate) {
+            moduleContainer.animate([
+              {opacity: 0},
+              {opacity: 1},
+            ], 150);
+          }
+          
+          document.head.removeChild(script);
+        }
+      });
+    };
+    
+    if (currentModule && moduleContainer.animate) {
+      var animate = moduleContainer.animate([
+        {opacity: 1},
+        {opacity: 0},
+      ], 150);
+
+      animate.onfinish = function() {
+        load();
+      };
+    } else {
+      load();
+    }
   };
 
   app.module = function(register) {
@@ -71,7 +86,7 @@ var app = (function(window, document, E, ajax) {
         moduleContainer.animate([
           {opacity: 0},
           {opacity: 1},
-        ], 200);
+        ], 150);
       }
     };
     
