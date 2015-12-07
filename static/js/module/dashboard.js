@@ -13,30 +13,8 @@ app.module(function(E, ajax) {
       parent: container
     });
 
-    ajax.get('classes').then(function(classes) {
-      classes.push(classes[0]);
-      classes.forEach(function (clas) {
-        var panel = E('div', {
-          className: 'panel panel-primary',
-          parent: body
-        });
-
-        E('div', {
-          className: 'panel-heading',
-          children: [E('h2', {
-            className: 'panel-title',
-            textContent: clas.id + ' - ' + clas.instructor_id
-          })],
-          parent: panel
-        })
-
-        E('div', {
-          className: 'panel-body',
-          textContent: 'test',
-          parent: panel
-        });
-      });
-    });
+    projects(body);
+    teams(body);
   };
 
   function navbar(container) {
@@ -67,8 +45,8 @@ app.module(function(E, ajax) {
     E('li', {
       className: 'active',
       children: [E('a', {
-        href: '#projects',
-        textContent: 'Projects'
+        href: '#dashboard',
+        textContent: 'Dashboard'
       })],
       parent: nav
     });
@@ -93,6 +71,132 @@ app.module(function(E, ajax) {
         }
       })],
       parent: controls
+    });
+  }
+
+  function projects(container) {
+    var section = E('div', {
+      parent: container
+    });
+
+    E('h4', {
+      textContent: 'Projects:',
+      parent: section
+    });
+
+    E('div', {
+      className: 'btn btn-default',
+      textContent: 'Create Project',
+      onclick: function() {
+        ajax.put('project').then(function(response) {
+          console.log(response);
+        });
+      },
+      parent: section
+    });
+
+    E('div', {
+      className: 'btn btn-default',
+      textContent: 'Edit Project',
+      onclick: function() {
+        ajax.post('project').then(function(response) {
+          console.log(response);
+        });
+      },
+      parent: section
+    });
+
+    ajax.get('projects').then(function(projects) {
+      projects.forEach(function (project) {
+        var panel = E('div', {
+          className: 'panel panel-primary',
+          parent: section
+        });
+
+        E('div', {
+          className: 'panel-heading',
+          children: [E('h2', {
+            className: 'panel-title',
+            textContent: project.name
+          })],
+          parent: panel
+        })
+
+        E('div', {
+          className: 'panel-body',
+          textContent: 'test',
+          parent: panel
+        });
+      });
+    });
+  }
+
+  function teams(container) {
+    var section = E('div', {
+      parent: container
+    });
+
+    E('h4', {
+      textContent: 'Teams:',
+      parent: section
+    });
+
+    E('div', {
+      className: 'btn btn-default',
+      textContent: 'Create Team',
+      onclick: function() {
+        ajax.put('team').then(function(response) {
+          console.log(response);
+        });
+      },
+      parent: section
+    });
+
+    E('div', {
+      className: 'btn btn-default',
+      textContent: 'Edit Team',
+      onclick: function() {
+        ajax.post('team').then(function(response) {
+          console.log(response);
+        });
+      },
+      parent: section
+    });
+
+    E('div', {
+      className: 'btn btn-default',
+      textContent: 'Join Team',
+      parent: section
+    });
+
+    E('div', {
+      className: 'btn btn-default',
+      textContent: 'Leave Team',
+      parent: section
+    });
+
+    ajax.get('teams').then(function(teams) {
+      teams.forEach(function (team) {
+        var panel = E('div', {
+          className: 'panel panel-primary',
+          parent: section
+        });
+
+        E('div', {
+          className: 'panel-heading',
+          children: [E('h2', {
+            className: 'panel-title',
+            textContent: team.name + ' - ' + team.liason_id
+          })],
+          parent: panel
+        })
+
+        E('div', {
+          className: 'panel-body',
+          textContent: 'test',
+          parent: panel
+        });
+      });
     });
   }
 
