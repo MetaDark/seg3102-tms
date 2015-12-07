@@ -30,7 +30,7 @@ var app = (function(window, document, E, ajax) {
     });
     
     moduleCSS = [];
-    
+
     if (!currentModule) {
       history.replaceState(null, null, '#' + id);
     } else {
@@ -45,10 +45,17 @@ var app = (function(window, document, E, ajax) {
         document.head.removeChild(script);
       },
       onerror: function() {
-        E('div', {
+        E('h1', {
           textContent: 'Page not found!',
           parent: moduleContainer
         });
+
+        if (moduleContainer.animate) {
+          moduleContainer.animate([
+            {opacity: 0},
+            {opacity: 1},
+          ], 200);
+        }
         
         document.head.removeChild(script);
       }
