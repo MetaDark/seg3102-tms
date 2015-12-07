@@ -66,16 +66,16 @@ app.put('/ajax/user', function(req, res) {
       return;
     }
 
-    res.send();
+    res.json();
   });
 });
 
 /* Instructor Login / Student Login */
 app.post('/ajax/login', function(req, res) {
   // Temporary hack to always login as me
-  req.session.userId = '7238982';
-  res.send();
-  return;
+  // req.session.userId = '7238982';
+  // res.json();
+  // retur;n
   
   var params = req.body;
   var query = 'SELECT id, password, salt FROM users WHERE id = $id';
@@ -104,20 +104,20 @@ app.post('/ajax/login', function(req, res) {
     }
 
     req.session.userId = user.id;
-    res.send();
+    res.json();
   });
 });
 
 /* Instructor Logout / Student Logout */
 app.post('/ajax/logout', function(req, res) {
   req.session.destroy();
-  res.send();
+  res.json();
 });
 
 /* Obtain list of classes that user is a member of */
 app.get('/ajax/classes', function(req, res) {
   if (!req.session.userId) {
-    res.status(401).send();
+    res.status(401).json();
     return;
   }
 
@@ -142,7 +142,7 @@ app.get('/ajax/classes', function(req, res) {
 /* Create Project */
 app.put('/ajax/project', function(req, res) {
   if (!req.session.userId) {
-    res.status(401).send();
+    res.status(401).json();
     return;
   }
 
@@ -175,14 +175,14 @@ app.put('/ajax/project', function(req, res) {
       return;
     }
 
-    res.send();
+    res.json();
   });
 });
 
 /* Edit Project */
 app.post('/ajax/project', function(req, res) {
   if (!req.session.userId) {
-    res.status(401).send();
+    res.status(401).json();
     return;
   }
 
@@ -192,7 +192,7 @@ app.post('/ajax/project', function(req, res) {
 /* List projects */
 app.get('/ajax/projects', function(req, res) {
   if (!req.session.userId) {
-    res.status(401).send();
+    res.status(401).json();
     return;
   }
 
@@ -217,7 +217,7 @@ app.get('/ajax/projects', function(req, res) {
 /* Create Team */
 app.put('/ajax/team', function(req, res) {
   if (!req.session.userId) {
-    res.status(401).send();
+    res.status(401).json();
     return;
   }
 
@@ -227,7 +227,7 @@ app.put('/ajax/team', function(req, res) {
 /* Edit Team */
 app.post('/ajax/team', function(req, res) {
   if (!req.session.userId) {
-    res.status(401).send();
+    res.status(401).json();
     return;
   }
 
@@ -237,7 +237,7 @@ app.post('/ajax/team', function(req, res) {
 /* Join Team */
 app.post('/ajax/team/join', function(req, res) {
   if (!req.session.userId) {
-    res.status(401).send();
+    res.status(401).json();
     return;
   }
 
@@ -247,7 +247,7 @@ app.post('/ajax/team/join', function(req, res) {
 /* Leave Team */
 app.post('/ajax/team/leave', function(req, res) {
   if (!req.session.userId) {
-    res.status(401).send();
+    res.status(401).json();
     return;
   }
   
@@ -257,7 +257,7 @@ app.post('/ajax/team/leave', function(req, res) {
 /* List Teams */
 app.get('/ajax/teams', function(req, res) {
   if (!req.session.userId) {
-    res.status(401).send();
+    res.status(401).json();
     return;
   }
 
