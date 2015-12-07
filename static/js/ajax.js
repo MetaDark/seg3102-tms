@@ -39,7 +39,7 @@ var ajax = (function () {
         contentType = 'application/x-www-form-urlencoded';
       }
       
-      xhr.open(method, url);
+      xhr.open(method, 'ajax/' + url);
       xhr.setRequestHeader('Content-Type', contentType);
       xhr.send(data);
     });

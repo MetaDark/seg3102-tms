@@ -20,7 +20,7 @@ app.use(express.static(__dirname + '/static'));
 app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
 
 /* Register User */
-app.put('/user', function(req, res) {
+app.put('/ajax/user', function(req, res) {
   var params = req.body;
   var invalid = [];
   if (!params.id)  {
@@ -71,7 +71,7 @@ app.put('/user', function(req, res) {
 });
 
 /* Instructor Login / Student Login */
-app.post('/login', function(req, res) {
+app.post('/ajax/login', function(req, res) {
   // Temporary hack to always login as me
   req.session.userId = '7238982';
   res.send();
@@ -109,12 +109,12 @@ app.post('/login', function(req, res) {
 });
 
 /* Instructor Logout / Student Logout */
-app.post('/logout', function(req, res) {
+app.post('/ajax/logout', function(req, res) {
   req.session.destroy();
   res.send();
 });
 
-app.get('/classes', function(req, res) {
+app.get('/ajax/classes', function(req, res) {
   if (!req.session.userId) {
     res.status(401).send();
     return;
@@ -139,7 +139,7 @@ app.get('/classes', function(req, res) {
 });
 
 /* Create Project */
-app.put('/project', function(req, res) {
+app.put('/ajax/project', function(req, res) {
   if (!req.session.userId) {
     res.status(401).send();
     return;
@@ -179,7 +179,7 @@ app.put('/project', function(req, res) {
 });
 
 /* Update Project */
-app.post('/project', function(req, res) {
+app.post('/ajax/project', function(req, res) {
   if (!req.session.userId) {
     res.status(401).send();
     return;
@@ -189,7 +189,7 @@ app.post('/project', function(req, res) {
 });
 
 /* List projects */
-app.get('/projects', function(req, res) {
+app.get('/ajax/projects', function(req, res) {
   if (!req.session.userId) {
     res.status(401).send();
     return;
@@ -214,7 +214,7 @@ app.get('/projects', function(req, res) {
 });
 
 /* Create Team */
-app.put('/team', function(req, res) {
+app.put('/ajax/team', function(req, res) {
   if (!req.session.userId) {
     res.status(401).send();
     return;
@@ -224,7 +224,7 @@ app.put('/team', function(req, res) {
 });
 
 /* Update Team */
-app.post('/team', function(req, res) {
+app.post('/ajax/team', function(req, res) {
   if (!req.session.userId) {
     res.status(401).send();
     return;
@@ -234,7 +234,7 @@ app.post('/team', function(req, res) {
 });
 
 /* List Teams */
-app.get('/teams', function(req, res) {
+app.get('/ajax/teams', function(req, res) {
   if (!req.session.userId) {
     res.status(401).send();
     return;
