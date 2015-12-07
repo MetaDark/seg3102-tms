@@ -52,8 +52,9 @@ Modal.prototype.close = function() {
 
   if (this.elem.animate) {
     var animation = this.elem.animate([
-      {opacity: 1},
-      {opacity: 0},
+      {opacity: 1, transform: 'scale(1)'},
+      {opacity: 1, transform: 'scale(1.1)'},
+      {opacity: 0, transform: 'scale(0.3)'},
     ], 150);
 
     animation.onfinish = function() {
