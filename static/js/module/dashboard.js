@@ -88,9 +88,7 @@ app.module(function(E, ajax) {
       className: 'btn btn-default',
       textContent: 'Create Project',
       onclick: function() {
-        ajax.put('project').then(function(response) {
-          console.log(response);
-        });
+        editProject(null);
       },
       parent: section
     });
@@ -99,17 +97,8 @@ app.module(function(E, ajax) {
       className: 'btn btn-default',
       textContent: 'Edit Project',
       onclick: function() {
-        ajax.post('project').then(function(response) {
-          var modal = new Modal({
-            title: 'Edit Project'
-          });
-
-          E('div', {
-            textContent: 'Hello',
-            parent: modal.body
-          });
-
-          modal.open();
+        editProject({
+          name: 'TEST'
         });
       },
       parent: section
@@ -138,6 +127,34 @@ app.module(function(E, ajax) {
         });
       });
     });
+  }
+
+  function editProject(project) {
+    var modal = new Modal({
+      title: project ? 'Edit' : 'Create' + ' Project'
+    });
+
+    form({
+      action: 'project',
+      method: project ? 'post' : 'put',
+      defaults: project,
+      inputs: [{
+        param: 'name',
+        label: 'Name'
+      }, {
+        param: 'classId',
+        type: 'hidden'
+      }],
+      submit: {
+        label: project ? 'Save' : 'Create',
+        then: function() {
+          modal.close()
+        }
+      },
+      parent: modal.body
+    });
+
+    modal.open();
   }
 
   function teams(container) {

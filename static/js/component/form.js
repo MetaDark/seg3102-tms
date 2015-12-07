@@ -1,4 +1,8 @@
 function form(params) {
+  if (!params.defaults) {
+    params.defaults = {};
+  }
+
   var form = E('div', {
     id: params.id,
     className: ['form', params.className],
@@ -25,6 +29,7 @@ function form(params) {
       className: ['form-control', input.className],
       type: input.type || 'text',
       placeholder: input.label,
+      value: params.defaults[input.param],
       parent: group,
       onblur: function() {
         group.classList.remove('has-error');

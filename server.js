@@ -145,7 +145,37 @@ app.put('/project', function(req, res) {
     return;
   }
 
-  res.send('create project');
+  var params = req.body;
+  var invalid = [];
+
+  if (!params.name)  {
+    invalid.push('name');
+  }
+
+  if (!params.classId)  {
+    invalid.push('classId');
+  }
+
+  if (invalid.length > 0) {
+    res.status(400).json({invalid: invalid});
+    return;
+  }
+  
+  var query =
+        'INSERT INTO projects (name, class_id)' +
+        'VALUES($name, $class_id)';
+
+  db.run(query, {
+    $name: req.session.name,
+    $class_id: req.session.classId
+  }, function(err, classes) {
+    if (err) {
+      res.status(500).json(err);
+      return;
+    }
+
+    res.send();
+  });
 });
 
 /* Update Project */
