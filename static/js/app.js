@@ -2,7 +2,7 @@
 
 var app = (function(window, document, E, ajax) {
   var app = {};
-  
+
   var moduleContainer = null;
   var moduleDefault = 'login';
   var moduleCSS = [];
@@ -17,7 +17,13 @@ var app = (function(window, document, E, ajax) {
     };
     
     window.addEventListener('hashchange', hashchange, false);
-    hashchange();
+    
+    ajax.post('login').then(function(user) {
+      app.user = user;
+      hashchange();
+    }, function() {
+      app.load('login'); 
+    });
   };
   
   app.load = function(id) {
