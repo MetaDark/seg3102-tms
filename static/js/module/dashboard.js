@@ -180,9 +180,7 @@ app.module(function(E, ajax) {
       className: 'btn btn-default',
       textContent: 'Create Team',
       onclick: function() {
-        ajax.put('team').then(function(response) {
-          console.log(response);
-        });
+        editTeam(null);
       },
       parent: section
     });
@@ -191,8 +189,8 @@ app.module(function(E, ajax) {
       className: 'btn btn-default',
       textContent: 'Edit Team',
       onclick: function() {
-        ajax.post('team').then(function(response) {
-          console.log(response);
+        editTeam({
+          name: 'Test'
         });
       },
       parent: section
@@ -243,6 +241,31 @@ app.module(function(E, ajax) {
         });
       });
     });
+  }
+
+  function editTeam(team) {
+    var modal = new Modal({
+      title: team ? 'Edit' : 'Create' + ' Team'
+    });
+
+    form({
+      action: 'team',
+      method: team ? 'post' : 'put',
+      defaults: team,
+      inputs: [{
+        param: 'name',
+        label: 'Name'
+      }],
+      submit: {
+        label: team ? 'Save' : 'Create',
+        then: function() {
+          modal.close()
+        }
+      },
+      parent: modal.body
+    });
+
+    modal.open();
   }
 
   return module;
