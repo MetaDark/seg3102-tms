@@ -195,7 +195,53 @@ app.post('/ajax/project', function(req, res) {
     return;
   }
 
-  res.send('Edit project');
+  var params = req.body;
+  var invalid = [];
+
+  if (!params.id) {
+    invalid.push('id');
+  }
+  
+  if (!params.name) {
+    invalid.push('name');
+  }
+
+  if (!params.min_team_size) {
+    invalid.push('min_team_size');
+  }
+
+  if (!params.max_team_size) {
+    invalid.push('max_team_size');
+  }
+
+  if (invalid.length > 0) {
+    res.status(400).json({invalid: invalid});
+    return;
+  }
+  
+  var query =
+        'UPDATE projects SET ' +
+        'name=$name,' +
+        'description=$description,' +
+        'min_team_size=$min_team_size,' +
+        'max_team_size=$max_team_size ' +
+        'WHERE id = $id';
+
+  db.run(query, {
+    $id: params.id,
+    $name: params.name,
+    $description: params.description,
+    $min_team_size: params.min_team_size,
+    $max_team_size: params.max_team_size
+  }, function(err, classes) {
+    if (err) {
+      console.log(err);
+      res.status(500).json(err);
+      return;
+    }
+
+    res.json();
+  });
 });
 
 /* List projects */
