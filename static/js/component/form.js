@@ -53,7 +53,9 @@ function form(params) {
       if (e.keyCode == 13) {
         var next = inputs[i + 1];
         if (next) {
-          next.elem.focus();
+          if (input.type !== 'textarea') {
+            next.elem.focus();
+          }
         } else {
           submit.click();
         }
