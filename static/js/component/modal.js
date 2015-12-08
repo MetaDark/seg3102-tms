@@ -10,17 +10,17 @@ function Modal(params) {
     parent: this.elem
   });
 
-  this.content = E('div', {
+  var content = E('div', {
     className: 'modal-content',
     parent: this.dialog,
   });
 
   this.header = E('div', {
     className: 'modal-header',
-    parent: this.content
+    parent: content
   });
 
-  E('button', {
+  var close = E('button', {
     className: 'close',
     textContent: '×',
     onclick: this.close.bind(this),
@@ -37,7 +37,7 @@ function Modal(params) {
 
   this.body = E('div', {
     className: 'modal-body',
-    parent: this.content
+    parent: content
   });
 
   this.keydown = function(e) {
@@ -67,7 +67,10 @@ Modal.prototype.close = function() {
     {opacity: 1, transform: 'scale(1.1)'},
     {opacity: 0, transform: 'scale(0.3)'},
   ], 150).onfinish = function() {
-    document.body.removeChild(modal.elem);
+    var parent = modal.elem.parentElement;
+    if (parent) {
+      parent.removeChild(modal.elem);
+    }
   }
 
   window.removeEventListener('keydown', this.keydown);
