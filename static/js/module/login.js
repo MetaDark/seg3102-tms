@@ -79,6 +79,11 @@ app.module(function(E, ajax) {
       submit: {
         label: 'Register',
         then: function() {
+          new Alert({
+            message: 'Account created',
+            timeout: true
+          }).open();
+
           tabs.focus('Login');
         }
       }
