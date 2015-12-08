@@ -13,10 +13,7 @@ app.module(function(E, ajax) {
       parent: container
     });
 
-    if (app.user.is_instructor) {
-      projects(body);
-    }
-    teams(body);
+    projects(body);
   };
 
   function navbar(container) {
@@ -81,50 +78,87 @@ app.module(function(E, ajax) {
       parent: container
     });
 
-    E('h4', {
-      textContent: 'Projects:',
-      parent: section
-    });
+    var source;
+    if (app.user.is_instructor) {
+      source = 'projects/mine';
 
-    E('div', {
-      className: 'btn btn-default',
-      textContent: 'Create Project',
-      onclick: function() {
-        editProject(null);
-      },
-      parent: section
-    });
+      E('div', {
+        className: 'btn btn-default',
+        textContent: 'Create',
+        onclick: function() {
+          editProject(null);
+        },
+        parent: section
+      });
+    } else {
+      source = 'projects/available';
+    }
 
-    ajax.get('projects/mine').then(function(projects) {
+    ajax.get(source).then(function(projects) {
       projects.forEach(function (project) {
         var panel = E('div', {
           className: 'panel panel-primary',
           parent: section
         });
 
-        E('div', {
+        var heading = E('div', {
           className: 'panel-heading',
           children: [E('h2', {
             className: 'panel-title',
             textContent: project.name
           })],
           parent: panel
-        })
+        });
 
-        E('div', {
+        if (app.user.is_instructor) {
+          E('div', {
+            className: 'btn btn-default',
+            textContent: 'Edit',
+            onclick: function() {
+              editProject(project);
+            },
+            parent: heading
+          });
+
+          E('div', {
+            className: 'btn btn-default',
+            textContent: 'Delete',
+            parent: heading
+          });
+        }
+
+        var body = E('div', {
           className: 'panel-body',
-          textContent: project.description + ': ' + project.min_team_size + ' ' + project.max_team_size,
           parent: panel
         });
 
-        E('div', {
-          className: 'btn btn-default',
-          textContent: 'Edit Project',
-          onclick: function() {
-            editProject(project);
-          },
-          parent: panel
+        E('p', {
+          children: [E('b', {
+            textContent: 'Description: '
+          }), project.description],
+          parent: body
         });
+
+        var teamSize = project.min_team_size !== project.max_team_size ?
+              project.min_team_size + ' - ' + project.max_team_size :
+              project.max_team_size;
+        teamSize += ' members';
+
+        E('p', {
+          children: [E('b', {
+            textContent: 'Team Size: '
+          }), teamSize],
+          parent: body
+        });
+
+        E('p', {
+          children: [E('b', {
+            textContent: 'Teams: '
+          })],
+          parent: body
+        });
+
+        teams(body, project);
       });
     });
   }
@@ -167,21 +201,18 @@ app.module(function(E, ajax) {
     modal.open();
   }
 
-  function teams(container) {
+  function teams(container, project) {
     var section = E('div', {
       parent: container
-    });
-
-    E('h4', {
-      textContent: 'Teams:',
-      parent: section
     });
 
     E('div', {
       className: 'btn btn-default',
       textContent: 'Create Team',
       onclick: function() {
-        editTeam(null);
+        editTeam({
+          project_id: project.id
+        });
       },
       parent: section
     });
@@ -219,7 +250,9 @@ app.module(function(E, ajax) {
       parent: section
     });
 
-    ajax.get('teams').then(function(teams) {
+    ajax.get('teams', {
+      project_id: project.id
+    }).then(function(teams) {
       teams.forEach(function (team) {
         var panel = E('div', {
           className: 'panel panel-primary',

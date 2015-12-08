@@ -26,8 +26,12 @@ var element = (function(window, document) {
     if (params.children) {
       var fragment = document.createDocumentFragment();
       params.children.forEach(function(child) {
+        if (!(child instanceof Node)) {
+          child = document.createTextNode(child);
+        }
         fragment.appendChild(child);
       });
+
       elem.appendChild(fragment);
       delete params.children;
     }

@@ -80,7 +80,7 @@ app.post('/ajax/login', function(req, res) {
   }
   
   var params = req.body;
-  var query = 'SELECT * FROM users WHERE id = $id';
+  var query = 'SELECT * FROM users WHERE id = $id LIMIT 1';
   db.all(query, {
     $id: params.id
   }, function(err, users) {
@@ -186,7 +186,7 @@ app.put('/ajax/project', function(req, res) {
     $min_team_size: params.min_team_size,
     $max_team_size: params.max_team_size,
     $class_id: 'SEG3102A'
-  }, function(err, classes) {
+  }, function(err) {
     if (err) {
       console.log(err);
       res.status(500).json(err);
@@ -259,7 +259,7 @@ app.get('/ajax/projects/mine', function(req, res) {
     res.status(401).json();
     return;
   }
-
+  
   if (!req.session.user.is_instructor) {
     res.status(403).json();
     return;
@@ -273,14 +273,38 @@ app.get('/ajax/projects/mine', function(req, res) {
 
   db.all(query, {
     $user_id: req.session.user.id
-  }, function(err, classes) {
+  }, function(err, projects) {
     if (err) {
       console.log(err);
       res.status(500).json(err);
       return;
     }
 
-    res.json(classes);
+    res.json(projects);
+  });
+});
+
+/* List projects available to a student */
+app.get('/ajax/projects/available', function(req, res) {
+  if (!req.session.user) {
+    res.status(401).json();
+    return;
+  }
+
+  var query =
+        'SELECT projects.* ' +
+        'FROM projects, class_members WHERE ' +
+        'class_members.member_id = $user_id AND ' +
+        'class_members.class_id = projects.class_id';
+  
+  db.all(query, function(err, projects) {
+    if (err) {
+      console.log(err);
+      res.status(500).json(err);
+      return;
+    }
+
+    res.json(projects);
   });
 });
 
