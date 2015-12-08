@@ -93,17 +93,6 @@ app.module(function(E, ajax) {
       parent: section
     });
 
-    E('div', {
-      className: 'btn btn-default',
-      textContent: 'Edit Project',
-      onclick: function() {
-        editProject({
-          name: 'TEST'
-        });
-      },
-      parent: section
-    });
-
     ajax.get('projects').then(function(projects) {
       projects.forEach(function (project) {
         var panel = E('div', {
@@ -122,7 +111,16 @@ app.module(function(E, ajax) {
 
         E('div', {
           className: 'panel-body',
-          textContent: 'test',
+          textContent: project.description + ': ' + project.min_team_size + ' ' + project.max_team_size,
+          parent: panel
+        });
+
+        E('div', {
+          className: 'btn btn-default',
+          textContent: 'Edit Project',
+          onclick: function() {
+            editProject(project);
+          },
           parent: panel
         });
       });
@@ -146,11 +144,11 @@ app.module(function(E, ajax) {
         label: 'Description',
         type: 'textarea'
       }, {
-        param: 'minTeamSize',
+        param: 'min_team_size',
         label: 'Minimum Team Size',
         type: 'number'
       }, {
-        param: 'maxTeamSize',
+        param: 'max_team_size',
         label: 'Maximum Team Size',
         type: 'number'
       }],

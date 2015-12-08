@@ -153,12 +153,12 @@ app.put('/ajax/project', function(req, res) {
     invalid.push('name');
   }
 
-  if (!params.minTeamSize) {
-    invalid.push('minTeamSize');
+  if (!params.min_team_size) {
+    invalid.push('min_team_size');
   }
 
-  if (!params.maxTeamSize) {
-    invalid.push('maxTeamSize');
+  if (!params.max_team_size) {
+    invalid.push('max_team_size');
   }
 
   if (invalid.length > 0) {
@@ -174,8 +174,8 @@ app.put('/ajax/project', function(req, res) {
   db.run(query, {
     $name: params.name,
     $description: params.description,
-    $min_team_size: params.minTeamSize,
-    $max_team_size: params.maxTeamSize,
+    $min_team_size: params.min_team_size,
+    $max_team_size: params.max_team_size,
     $class_id: 'SEG3102A'
   }, function(err, classes) {
     if (err) {
