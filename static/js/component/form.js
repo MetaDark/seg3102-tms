@@ -57,6 +57,7 @@ function form(params) {
             next.elem.focus();
           }
         } else {
+          group.classList.remove('has-error');
           submit.click();
         }
       }
@@ -67,7 +68,8 @@ function form(params) {
     var obj = {
       param: input.param,
       group: group,
-      elem: elem
+      elem: elem,
+      label: input.label
     };
 
     inputs.push(obj);
@@ -100,12 +102,34 @@ function form(params) {
         .then(params.submit.then, function(err) {
           var invalid = err.invalid;
           if (!invalid) {
+            new Alert({
+              message: 'There was an error processing your request',
+              type: 'danger',
+              timeout: true
+            }).open();
+
             if (params.catch) {
               params.catch(err);
             }
+
             return;
           }
 
+          // Show an alert if there are invalid fields
+          var message;
+          if (invalid.length === 1) {
+            message = 'Invalid ' + inputMap[invalid[0]].label || invalid[0];
+          } else if (invalid.length > 1) {
+            message = 'Form contains invalid fields';
+          }
+
+          new Alert({
+            message: message,
+            type: 'danger',
+            timeout: true
+          }).open();
+
+          // Highlight and focus invalid fields
           var focused = false;
           invalid.forEach(function(param) {
             var input = inputMap[param];
