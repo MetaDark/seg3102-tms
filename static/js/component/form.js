@@ -24,28 +24,43 @@ function form(params) {
       parent: form
     });
 
-    var elem = E('input', {
-      id: input.id,
-      className: ['form-control', input.className],
-      type: input.type || 'text',
-      placeholder: input.label,
-      value: params.defaults[input.param],
-      parent: group,
-      onblur: function() {
-        group.classList.remove('has-error');
-      },
-      onkeydown: function(e) {
-        var keyCode = e.keyCode;
-        if (e.keyCode == 13) {
-          var next = inputs[i + 1];
-          if (next) {
-            next.elem.focus();
-          } else {
-            submit.click();
-          }
+    var value = params.defaults[input.param];
+
+    var elem;
+    switch(input.type) {
+    case 'textarea':
+      elem = E('textarea', {
+        textContent: value
+      });
+      break;
+    default:
+      elem = E('input', {
+        type: input.type,
+        value: value
+      });
+      break;
+    }
+
+    elem.className = 'form-control';
+    elem.placeholder = input.label;
+
+    elem.onblur = function() {
+      group.classList.remove('has-error');
+    };
+
+    elem.onkeydown = function(e) {
+      var keyCode = e.keyCode;
+      if (e.keyCode == 13) {
+        var next = inputs[i + 1];
+        if (next) {
+          next.elem.focus();
+        } else {
+          submit.click();
         }
       }
-    });
+    };
+
+    group.appendChild(elem);
 
     var obj = {
       param: input.param,
