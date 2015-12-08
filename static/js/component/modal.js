@@ -1,4 +1,6 @@
 function Modal(params) {
+  var modal = this;
+
   this.elem = E('div', {
     className: 'floating-box'
   });
@@ -37,10 +39,21 @@ function Modal(params) {
     className: 'modal-body',
     parent: this.content
   });
+
+  this.keydown = function(e) {
+    var keyCode = e.keyCode;
+    if (keyCode == 27) {
+      modal.close();
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
 }
 
 Modal.prototype.open = function() {
   document.body.appendChild(this.elem);
+  window.addEventListener('keydown', this.keydown, false);
+
   if (this.dialog.animate) {
     this.dialog.animate([
       {opacity: 0},
@@ -51,9 +64,12 @@ Modal.prototype.open = function() {
 
 Modal.prototype.close = function() {
   var modal = this;
+
   var close = function() {
     document.body.removeChild(modal.elem);
   };
+
+  window.removeEventListener('keydown', this.keydown);
 
   if (this.dialog.animate) {
     var animation = this.dialog.animate([
