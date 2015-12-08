@@ -5,7 +5,6 @@ var app = (function(window, document, E, ajax) {
 
   var moduleContainer = null;
   var moduleDefault = 'login';
-  var moduleCSS = [];
   var currentModule = null;
 
   app.start = function() {
@@ -30,18 +29,23 @@ var app = (function(window, document, E, ajax) {
     if (!id) id = moduleDefault;
 
     var load = function() {
-      // Cleanup the previous module
-      document.body.innerHTML = '';
-      moduleCSS.forEach(function(css) {
-        document.head.removeChild(css);
-      });
+      var lastModule = currentModule;
+      currentModule = {
+        id: id,
+        obj: null,
+        css: []
+      };
       
-      moduleCSS = [];
-
-      if (!currentModule) {
-        history.replaceState(null, null, '#' + id);
-      } else {
+      if (lastModule) {
+        // Cleanup last module
+        moduleContainer.innerHTML = '';
+        lastModule.css.forEach(function(css) {
+          document.head.removeChild(css);
+        });
+        
         history.pushState(null, null, '#' + id);
+      } else {
+        history.replaceState(null, null, '#' + id);
       }
       
       var script = E('script', {
@@ -81,6 +85,10 @@ var app = (function(window, document, E, ajax) {
     }
   };
 
+  app.reload = function() {
+    app.load(currentModule.id);
+  };
+
   app.module = function(register) {
     var module = register(E, ajax);
 
@@ -96,7 +104,7 @@ var app = (function(window, document, E, ajax) {
       var numLeft = module.css.length;
       var cssLoaded = function(css, success) {
         if (success) {
-          moduleCSS.push(css);
+          currentModule.css.push(css);
         } else {
           document.head.removeChild(css);
         }
@@ -126,7 +134,7 @@ var app = (function(window, document, E, ajax) {
       display();
     }
     
-    currentModule = module;
+    currentModule.obj = module;
   };
   
   return app;
