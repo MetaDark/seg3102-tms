@@ -53,35 +53,22 @@ function Modal(params) {
 Modal.prototype.open = function() {
   document.body.appendChild(this.elem);
   window.addEventListener('keydown', this.keydown, false);
-
-  if (this.dialog.animate) {
-    this.dialog.animate([
-      {opacity: 0},
-      {opacity: 1},
-    ], 150);
-  }
+  this.dialog.animate([
+    {opacity: 0},
+    {opacity: 1},
+  ], 150);
 };
 
 Modal.prototype.close = function() {
   var modal = this;
 
-  var close = function() {
+  this.dialog.animate([
+    {opacity: 1, transform: 'scale(1)'},
+    {opacity: 1, transform: 'scale(1.1)'},
+    {opacity: 0, transform: 'scale(0.3)'},
+  ], 150).onfinish = function() {
     document.body.removeChild(modal.elem);
-  };
+  }
 
   window.removeEventListener('keydown', this.keydown);
-
-  if (this.dialog.animate) {
-    var animation = this.dialog.animate([
-      {opacity: 1, transform: 'scale(1)'},
-      {opacity: 1, transform: 'scale(1.1)'},
-      {opacity: 0, transform: 'scale(0.3)'},
-    ], 150);
-
-    animation.onfinish = function() {
-      close();
-    };
-  } else {
-    close();
-  }
 };

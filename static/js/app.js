@@ -58,12 +58,10 @@ var app = (function(window, document, E, ajax) {
             parent: moduleContainer
           });
 
-          if (moduleContainer.animate) {
-            moduleContainer.animate([
-              {opacity: 0},
-              {opacity: 1},
-            ], 150);
-          }
+          moduleContainer.animate([
+            {opacity: 0},
+            {opacity: 1},
+          ], 150);
           
           document.head.removeChild(this);
           this.onerror = false;
@@ -71,13 +69,11 @@ var app = (function(window, document, E, ajax) {
       });
     };
     
-    if (currentModule && moduleContainer.animate) {
-      var animate = moduleContainer.animate([
+    if (currentModule) {
+      moduleContainer.animate([
         {opacity: 1},
         {opacity: 0},
-      ], 150);
-
-      animate.onfinish = function() {
+      ], 150).onfinish = function() {
         load();
       };
     } else {
@@ -90,12 +86,10 @@ var app = (function(window, document, E, ajax) {
 
     var display = function() {
       module.display(moduleContainer);
-      if (moduleContainer.animate) {
-        moduleContainer.animate([
-          {opacity: 0},
-          {opacity: 1},
-        ], 150);
-      }
+      moduleContainer.animate([
+        {opacity: 0},
+        {opacity: 1},
+      ], 150);
     };
     
     if (module.css) {

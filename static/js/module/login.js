@@ -46,24 +46,13 @@ app.module(function(E, ajax) {
         label: 'Login',
         then: function(user) {
           app.user = user;
-
-          var loadDashbord = function() {
+          modal.animate([
+            {transform: 'translateX(0px)'},
+            {transform: 'translateX(-500px)'},
+          ], 150).onfinish = function() {
             modal.parentElement.removeChild(modal);
             app.load('dashboard');
           };
-
-          if (modal.animate) {
-            var animation = modal.animate([
-              {transform: 'translateX(0px)'},
-              {transform: 'translateX(-500px)'},
-            ], 150);
-
-            animation.onfinish = function() {
-              loadDashbord();
-            };
-          } else {
-            loadDashbord();
-          }
         }
       }
     });
