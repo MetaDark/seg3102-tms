@@ -6,24 +6,29 @@ app.module(function(E, ajax) {
   };
 
   module.display = function(container) {
-    var loginModal = E('div', {
-      className: 'login modal-dialog',
+    var floatingBox = E('div', {
+      className: 'floating-box',
       parent: container
+    });
+
+    var modal = E('div', {
+      className: 'login modal-dialog',
+      parent: floatingBox
     });
 
     E('h2', {
       className: 'login-title',
       textContent: 'TMS',
-      parent: loginModal
+      parent: modal
     });
 
-    var modalContent = E('div', {
+    var content = E('div', {
       className: 'login-content modal-content',
-      parent: loginModal,
+      parent: modal,
     });
 
     var tabs = new Tabs({
-      parent: modalContent
+      parent: content
     });
 
     var login = form({
@@ -41,12 +46,12 @@ app.module(function(E, ajax) {
         label: 'Login',
         then: function() {
           var loadDashbord = function() {
-            loginModal.parentElement.removeChild(loginModal);
+            modal.parentElement.removeChild(modal);
             app.load('dashboard');
           };
 
-          if (loginModal.animate) {
-            var animation = loginModal.animate([
+          if (modal.animate) {
+            var animation = modal.animate([
               {transform: 'translateX(0px)'},
               {transform: 'translateX(-500px)'},
             ], 150);

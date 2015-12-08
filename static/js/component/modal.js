@@ -1,11 +1,16 @@
 function Modal(params) {
   this.elem = E('div', {
+    className: 'floating-box'
+  });
+
+  this.dialog = E('div', {
     className: 'modal-dialog',
+    parent: this.elem
   });
 
   this.content = E('div', {
     className: 'modal-content',
-    parent: this.elem,
+    parent: this.dialog,
   });
 
   this.header = E('div', {
@@ -36,8 +41,8 @@ function Modal(params) {
 
 Modal.prototype.open = function() {
   document.body.appendChild(this.elem);
-  if (this.elem.animate) {
-    this.elem.animate([
+  if (this.dialog.animate) {
+    this.dialog.animate([
       {opacity: 0},
       {opacity: 1},
     ], 150);
@@ -50,8 +55,8 @@ Modal.prototype.close = function() {
     document.body.removeChild(modal.elem);
   };
 
-  if (this.elem.animate) {
-    var animation = this.elem.animate([
+  if (this.dialog.animate) {
+    var animation = this.dialog.animate([
       {opacity: 1, transform: 'scale(1)'},
       {opacity: 1, transform: 'scale(1.1)'},
       {opacity: 0, transform: 'scale(0.3)'},
