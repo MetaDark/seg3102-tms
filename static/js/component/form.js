@@ -72,6 +72,12 @@ function form(params) {
     inputMap[input.param] = obj;
   });
 
+  // Focus first input after DOM update
+  setTimeout(function() {
+    var first = inputs[0];
+    if (first) first.elem.focus();
+  }, 0);
+
   var submit = E('input', {
     id: params.submit.id,
     className: ['btn btn-primary btn-block',
