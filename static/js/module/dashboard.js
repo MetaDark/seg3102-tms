@@ -123,6 +123,13 @@ app.module(function(E, ajax) {
           E('div', {
             className: 'btn btn-default',
             textContent: 'Delete',
+            onclick: function() {
+              ajax.delete('project', {
+                id: project.id
+              }).then(function() {
+                app.reload();
+              });
+            },
             parent: heading
           });
         }

@@ -64,7 +64,7 @@ app.put('/ajax/user', function(req, res) {
   }, function(err) {
     if (err) {
       console.log(err);
-      res.status(500).json(err);
+      res.status(500).json();
       return;
     }
 
@@ -81,12 +81,13 @@ app.post('/ajax/login', function(req, res) {
   
   var params = req.body;
   var query = 'SELECT * FROM users WHERE id = $id LIMIT 1';
+  
   db.all(query, {
     $id: params.id
   }, function(err, users) {
     if (err) {
       console.log(err);
-      res.status(500).json(err);
+      res.status(500).json();
       return;
     }
 
@@ -140,7 +141,7 @@ app.get('/ajax/classes', function(req, res) {
   }, function(err, classes) {
     if (err) {
       console.log(err);
-      res.status(500).json(err);
+      res.status(500).json();
       return;
     }
 
@@ -174,7 +175,8 @@ app.put('/ajax/project', function(req, res) {
     res.status(400).json({invalid: invalid});
     return;
   }
-  
+
+  // TODO: Validate that the user has permissions to create projects
   var query =
         'INSERT INTO projects ' +
         '(name, description, min_team_size, max_team_size, class_id)' +
@@ -189,7 +191,7 @@ app.put('/ajax/project', function(req, res) {
   }, function(err) {
     if (err) {
       console.log(err);
-      res.status(500).json(err);
+      res.status(500).json();
       return;
     }
 
@@ -227,7 +229,8 @@ app.post('/ajax/project', function(req, res) {
     res.status(400).json({invalid: invalid});
     return;
   }
-  
+
+  // TODO: Validate that the user has permissions to edit the project
   var query =
         'UPDATE projects SET ' +
         'name=$name,' +
@@ -242,10 +245,43 @@ app.post('/ajax/project', function(req, res) {
     $description: params.description,
     $min_team_size: params.min_team_size,
     $max_team_size: params.max_team_size
-  }, function(err, classes) {
+  }, function(err) {
     if (err) {
       console.log(err);
-      res.status(500).json(err);
+      res.status(500).json();
+      return;
+    }
+
+    res.json();
+  });
+});
+
+app.delete('/ajax/project', function(req, res) {
+  if (!req.session.user) {
+    res.status(401).json();
+    return;
+  }
+
+  var params = req.body;
+  var invalid = [];
+
+  if (!params.id) {
+    invalid.push('id');
+  }
+
+  if (invalid.length > 0) {
+    res.status(400).json({invalid: invalid});
+    return;
+  }
+
+  // TODO: Validate that the user has permissions to delete the project
+  var query = 'DELETE FROM projects WHERE id = $id';
+  db.run(query, {
+    $id: params.id
+  }, function(err) {
+    if (err) {
+      console.log(err);
+      res.status(500).json();
       return;
     }
 
@@ -276,7 +312,7 @@ app.get('/ajax/projects/mine', function(req, res) {
   }, function(err, projects) {
     if (err) {
       console.log(err);
-      res.status(500).json(err);
+      res.status(500).json();
       return;
     }
 
@@ -300,7 +336,7 @@ app.get('/ajax/projects/available', function(req, res) {
   db.all(query, function(err, projects) {
     if (err) {
       console.log(err);
-      res.status(500).json(err);
+      res.status(500).json();
       return;
     }
 
@@ -345,10 +381,10 @@ app.put('/ajax/team', function(req, res) {
     $name: params.name,
     $project_id: params.project_id,
     $liason_id: req.session.user.id
-  }, function(err, classes) {
+  }, function(err) {
     if (err) {
       console.log(err);
-      res.status(500).json(err);
+      res.status(500).json();
       return;
     }
 
@@ -401,14 +437,14 @@ app.get('/ajax/teams', function(req, res) {
 
   db.all(query, {
     $user_id: req.session.user.id
-  }, function(err, classes) {
+  }, function(err, teams) {
     if (err) {
       console.log(err);
-      res.status(500).json(err);
+      res.status(500).json();
       return;
     }
 
-    res.json(classes);
+    res.json(teams);
   });
 });
 
