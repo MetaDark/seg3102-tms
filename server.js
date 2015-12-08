@@ -72,10 +72,10 @@ app.put('/ajax/user', function(req, res) {
 
 /* Instructor Login / Student Login */
 app.post('/ajax/login', function(req, res) {
-  // Temporary hack to always login as me
-  // req.session.userId = '7238982';
-  // res.json();
-  // retur;n
+  if (req.session.user) {
+    res.json(req.session.user);  
+    return;
+  }
   
   var params = req.body;
   var query = 'SELECT id, password, salt FROM users WHERE id = $id';
@@ -103,8 +103,8 @@ app.post('/ajax/login', function(req, res) {
       return;
     }
 
-    req.session.userId = user.id;
-    res.json();
+    req.session.user = {id: user.id};
+    res.json(req.session.user);
   });
 });
 
@@ -116,7 +116,7 @@ app.post('/ajax/logout', function(req, res) {
 
 /* Obtain list of classes that user is a member of */
 app.get('/ajax/classes', function(req, res) {
-  if (!req.session.userId) {
+  if (!req.session.user) {
     res.status(401).json();
     return;
   }
@@ -128,7 +128,7 @@ app.get('/ajax/classes', function(req, res) {
         'class_members.class_id = classes.id';
 
   db.all(query, {
-    $user_id: req.session.userId
+    $user_id: req.session.user.id
   }, function(err, classes) {
     if (err) {
       res.status(500).json(err);
@@ -141,7 +141,7 @@ app.get('/ajax/classes', function(req, res) {
 
 /* Create Project */
 app.put('/ajax/project', function(req, res) {
-  if (!req.session.userId) {
+  if (!req.session.user) {
     res.status(401).json();
     return;
   }
@@ -190,7 +190,7 @@ app.put('/ajax/project', function(req, res) {
 
 /* Edit Project */
 app.post('/ajax/project', function(req, res) {
-  if (!req.session.userId) {
+  if (!req.session.user) {
     res.status(401).json();
     return;
   }
@@ -200,7 +200,7 @@ app.post('/ajax/project', function(req, res) {
 
 /* List projects */
 app.get('/ajax/projects', function(req, res) {
-  if (!req.session.userId) {
+  if (!req.session.user) {
     res.status(401).json();
     return;
   }
@@ -212,7 +212,7 @@ app.get('/ajax/projects', function(req, res) {
         'classes.id = projects.class_id';
 
   db.all(query, {
-    $user_id: req.session.userId
+    $user_id: req.session.user.id
   }, function(err, classes) {
     if (err) {
       res.status(500).json(err);
@@ -225,7 +225,7 @@ app.get('/ajax/projects', function(req, res) {
 
 /* Create Team */
 app.put('/ajax/team', function(req, res) {
-  if (!req.session.userId) {
+  if (!req.session.user) {
     res.status(401).json();
     return;
   }
@@ -235,7 +235,7 @@ app.put('/ajax/team', function(req, res) {
 
 /* Edit Team */
 app.post('/ajax/team', function(req, res) {
-  if (!req.session.userId) {
+  if (!req.session.user) {
     res.status(401).json();
     return;
   }
@@ -245,7 +245,7 @@ app.post('/ajax/team', function(req, res) {
 
 /* Join Team */
 app.post('/ajax/team/join', function(req, res) {
-  if (!req.session.userId) {
+  if (!req.session.user) {
     res.status(401).json();
     return;
   }
@@ -255,7 +255,7 @@ app.post('/ajax/team/join', function(req, res) {
 
 /* Leave Team */
 app.post('/ajax/team/leave', function(req, res) {
-  if (!req.session.userId) {
+  if (!req.session.user) {
     res.status(401).json();
     return;
   }
@@ -265,7 +265,7 @@ app.post('/ajax/team/leave', function(req, res) {
 
 /* List Teams */
 app.get('/ajax/teams', function(req, res) {
-  if (!req.session.userId) {
+  if (!req.session.user) {
     res.status(401).json();
     return;
   }
@@ -277,7 +277,7 @@ app.get('/ajax/teams', function(req, res) {
         'team_members.team_id = teams.id';
 
   db.all(query, {
-    $user_id: req.session.userId
+    $user_id: req.session.user.id
   }, function(err, classes) {
     if (err) {
       res.status(500).json(err);
