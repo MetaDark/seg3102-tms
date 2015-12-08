@@ -45,8 +45,8 @@ app.put('/ajax/user', function(req, res) {
   }
   
   var query =
-        'INSERT INTO users (id, password, salt, name, email) ' +
-        'VALUES ($id, $password, $salt, $name, $email)';
+        'INSERT INTO users (id, password, salt, name, email, is_instructor) ' +
+        'VALUES ($id, $password, $salt, $name, $email, $is_instructor)';
 
   var salt = crypto.randomBytes(32);
   var hashedPassword =
@@ -59,9 +59,11 @@ app.put('/ajax/user', function(req, res) {
     $password: hashedPassword,
     $salt: salt,
     $name: params.name,
-    $email: params.email
+    $email: params.email,
+    $is_instructor: false
   }, function(err) {
     if (err) {
+      console.log(err);
       res.status(500).json(err);
       return;
     }
@@ -78,11 +80,12 @@ app.post('/ajax/login', function(req, res) {
   }
   
   var params = req.body;
-  var query = 'SELECT id, password, salt, name FROM users WHERE id = $id';
+  var query = 'SELECT * FROM users WHERE id = $id';
   db.all(query, {
     $id: params.id
   }, function(err, users) {
     if (err) {
+      console.log(err);
       res.status(500).json(err);
       return;
     }
@@ -105,7 +108,8 @@ app.post('/ajax/login', function(req, res) {
 
     req.session.user = {
       id: user.id,
-      name: user.name
+      name: user.name,
+      is_instructor: user.is_instructor
     };
     
     res.json(req.session.user);
@@ -135,6 +139,7 @@ app.get('/ajax/classes', function(req, res) {
     $user_id: req.session.user.id
   }, function(err, classes) {
     if (err) {
+      console.log(err);
       res.status(500).json(err);
       return;
     }
@@ -248,10 +253,15 @@ app.post('/ajax/project', function(req, res) {
   });
 });
 
-/* List projects */
-app.get('/ajax/projects', function(req, res) {
+/* List instructor's projects */
+app.get('/ajax/projects/mine', function(req, res) {
   if (!req.session.user) {
     res.status(401).json();
+    return;
+  }
+
+  if (!req.session.user.is_instructor) {
+    res.status(403).json();
     return;
   }
 
@@ -265,6 +275,7 @@ app.get('/ajax/projects', function(req, res) {
     $user_id: req.session.user.id
   }, function(err, classes) {
     if (err) {
+      console.log(err);
       res.status(500).json(err);
       return;
     }
@@ -368,6 +379,7 @@ app.get('/ajax/teams', function(req, res) {
     $user_id: req.session.user.id
   }, function(err, classes) {
     if (err) {
+      console.log(err);
       res.status(500).json(err);
       return;
     }

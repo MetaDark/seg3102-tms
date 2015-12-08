@@ -5,6 +5,7 @@ CREATE TABLE users (
   password blob NOT NULL,
   salt blob NOT NULL,
   name text NOT NULL,
+  is_instructor bit NOT NULL,
   email text NOT NULL UNIQUE);
 
 DROP TABLE IF EXISTS classes;
@@ -51,8 +52,8 @@ CREATE TABLE team_members (
   FOREIGN KEY(member_id) REFERENCES users(id));
 
 /* == Dummy Data == */
-INSERT INTO users (id, password, salt, name, email)
-    VALUES('instructor', '', '', 'Instructor', 'instructor@uottawa.ca');
+INSERT INTO users (id, password, salt, name, email, is_instructor)
+    VALUES('instructor', '', '', 'Instructor', 'instructor@uottawa.ca', 1);
 
 INSERT INTO classes (id, instructor_id, name)
     VALUES('SEG3102A', 'instructor', 'SEG3102 Software Design and Architecture');

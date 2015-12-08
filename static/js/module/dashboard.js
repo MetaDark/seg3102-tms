@@ -13,7 +13,9 @@ app.module(function(E, ajax) {
       parent: container
     });
 
-    projects(body);
+    if (app.user.is_instructor) {
+      projects(body);
+    }
     teams(body);
   };
 
@@ -93,7 +95,7 @@ app.module(function(E, ajax) {
       parent: section
     });
 
-    ajax.get('projects').then(function(projects) {
+    ajax.get('projects/mine').then(function(projects) {
       projects.forEach(function (project) {
         var panel = E('div', {
           className: 'panel panel-primary',
