@@ -78,7 +78,7 @@ app.post('/ajax/login', function(req, res) {
   }
   
   var params = req.body;
-  var query = 'SELECT id, password, salt FROM users WHERE id = $id';
+  var query = 'SELECT id, password, salt, name FROM users WHERE id = $id';
   db.all(query, {
     $id: params.id
   }, function(err, users) {
@@ -103,7 +103,11 @@ app.post('/ajax/login', function(req, res) {
       return;
     }
 
-    req.session.user = {id: user.id};
+    req.session.user = {
+      id: user.id,
+      name: user.name
+    };
+    
     res.json(req.session.user);
   });
 });
@@ -276,7 +280,45 @@ app.put('/ajax/team', function(req, res) {
     return;
   }
 
-  res.send('Team created');
+  if (!req.session.user) {
+    res.status(401).json();
+    return;
+  }
+
+  var params = req.body;
+  var invalid = [];
+
+  if (!params.name)  {
+    invalid.push('name');
+  }
+
+  if (!params.project_id)  {
+    invalid.push('project_id');
+  }
+
+  if (invalid.length > 0) {
+    res.status(400).json({invalid: invalid});
+    return;
+  }
+  
+  var query =
+        'INSERT INTO teams ' +
+        '(name, project_id, liason_id)' +
+        'VALUES($name, $project_id, $liason_id)';
+
+  db.run(query, {
+    $name: params.name,
+    $project_id: params.project_id,
+    $liason_id: req.session.user.id
+  }, function(err, classes) {
+    if (err) {
+      console.log(err);
+      res.status(500).json(err);
+      return;
+    }
+
+    res.json();
+  });
 });
 
 /* Edit Team */

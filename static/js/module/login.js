@@ -44,7 +44,9 @@ app.module(function(E, ajax) {
       }],
       submit: {
         label: 'Login',
-        then: function() {
+        then: function(user) {
+          app.user = user;
+
           var loadDashbord = function() {
             modal.parentElement.removeChild(modal);
             app.load('dashboard');
