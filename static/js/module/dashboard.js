@@ -155,6 +155,7 @@ app.module(function(E, ajax) {
       submit: {
         label: project ? 'Save' : 'Create',
         then: function() {
+          app.reload();
           modal.close()
         }
       },
@@ -257,6 +258,7 @@ app.module(function(E, ajax) {
       submit: {
         label: team ? 'Save' : 'Create',
         then: function() {
+          app.reload();
           modal.close()
         }
       },
