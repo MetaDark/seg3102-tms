@@ -26,6 +26,9 @@ DROP TABLE IF EXISTS projects;
 CREATE TABLE projects (
   id integer NOT NULL PRIMARY KEY,
   name text NOT NULL,
+  description text NOT NULL,
+  min_team_size integer NOT NULL,
+  max_team_size integer NOT NULL,
   class_id text NOT NULL,
   FOREIGN KEY(class_id) REFERENCES classes(id));
 
@@ -42,6 +45,7 @@ DROP TABLE IF EXISTS team_members;
 CREATE TABLE team_members (
   team_id integer NOT NULL,
   member_id text NOT NULL,
+  accepted bit NOT NULL,
   UNIQUE(team_id, member_id),
   FOREIGN KEY(team_id) REFERENCES teams(id),
   FOREIGN KEY(member_id) REFERENCES users(id));
@@ -52,12 +56,3 @@ INSERT INTO users (id, password, salt, name, email)
 
 INSERT INTO classes (id, instructor_id, name)
     VALUES('SEG3102A', 'instructor', 'SEG3102 Software Design and Architecture');
-
-INSERT INTO projects (name, class_id)
-    VALUES('TMS', 'SEG3102A');
-
-INSERT INTO users (id, password, salt, name, email)
-    VALUES('7238982', '', '', 'Kurt Bruneau', 'kbrun08@uottawa.ca');
-
-INSERT INTO class_members (class_id, member_id)
-    VALUES('SEG3102A', '7238982');

@@ -153,8 +153,12 @@ app.put('/ajax/project', function(req, res) {
     invalid.push('name');
   }
 
-  if (!params.classId)  {
-    invalid.push('classId');
+  if (!params.minTeamSize) {
+    invalid.push('minTeamSize');
+  }
+
+  if (!params.maxTeamSize) {
+    invalid.push('maxTeamSize');
   }
 
   if (invalid.length > 0) {
@@ -163,14 +167,19 @@ app.put('/ajax/project', function(req, res) {
   }
   
   var query =
-        'INSERT INTO projects (name, class_id)' +
-        'VALUES($name, $class_id)';
+        'INSERT INTO projects ' +
+        '(name, description, min_team_size, max_team_size, class_id)' +
+        'VALUES($name, $description, $min_team_size, $max_team_size, $class_id)';
 
   db.run(query, {
-    $name: req.session.name,
-    $class_id: req.session.classId
+    $name: params.name,
+    $description: params.description,
+    $min_team_size: params.minTeamSize,
+    $max_team_size: params.maxTeamSize,
+    $class_id: 'SEG3102A'
   }, function(err, classes) {
     if (err) {
+      console.log(err);
       res.status(500).json(err);
       return;
     }

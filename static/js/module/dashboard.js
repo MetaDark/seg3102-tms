@@ -142,8 +142,17 @@ app.module(function(E, ajax) {
         param: 'name',
         label: 'Name'
       }, {
-        param: 'classId',
-        type: 'hidden'
+        param: 'description',
+        label: 'Description',
+        type: 'textarea'
+      }, {
+        param: 'minTeamSize',
+        label: 'Minimum Team Size',
+        type: 'number'
+      }, {
+        param: 'maxTeamSize',
+        label: 'Maximum Team Size',
+        type: 'number'
       }],
       submit: {
         label: project ? 'Save' : 'Create',
