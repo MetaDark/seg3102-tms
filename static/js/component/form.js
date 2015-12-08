@@ -80,6 +80,10 @@ function form(params) {
     value: params.submit.label,
     onclick: function() {
       var data = {};
+      for (key in params.defaults) {
+        data[key] = params.defaults[key];
+      }
+
       inputs.forEach(function(input) {
         data[input.param] = input.elem.value;
       });
