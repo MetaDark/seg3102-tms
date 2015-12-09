@@ -153,15 +153,14 @@ app.put('/ajax/project', function(req, res) {
   // TODO: Validate that the user has permissions to create projects
   var query =
         'INSERT INTO projects ' +
-        '(name, description, min_team_size, max_team_size, class_id)' +
-        'VALUES($name, $description, $min_team_size, $max_team_size, $class_id)';
+        '(name, description, min_team_size, max_team_size)' +
+        'VALUES($name, $description, $min_team_size, $max_team_size)';
 
   db.run(query, {
     $name: params.name,
     $description: params.description,
     $min_team_size: params.min_team_size,
-    $max_team_size: params.max_team_size,
-    $class_id: 'SEG3102A'
+    $max_team_size: params.max_team_size
   }, function(err) {
     if (err) {
       console.log(err);

@@ -14,9 +14,7 @@ CREATE TABLE projects (
   name text NOT NULL,
   description text NOT NULL,
   min_team_size integer NOT NULL,
-  max_team_size integer NOT NULL,
-  class_id text NOT NULL,
-  FOREIGN KEY(class_id) REFERENCES classes(id));
+  max_team_size integer NOT NULL);
 
 DROP TABLE IF EXISTS teams;
 CREATE TABLE teams (
@@ -39,6 +37,3 @@ CREATE TABLE team_members (
 /* == Dummy Data == */
 INSERT INTO users (id, password, salt, name, email, is_instructor)
     VALUES('instructor', '', '', 'Instructor', 'instructor@uottawa.ca', 1);
-
-INSERT INTO classes (id, instructor_id, name)
-    VALUES('SEG3102A', 'instructor', 'SEG3102 Software Design and Architecture');
