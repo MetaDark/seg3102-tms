@@ -8,7 +8,10 @@ var app = (function(window, document, E, ajax) {
   var currentModule = null;
 
   app.start = function() {
-    moduleContainer = document.body;
+    moduleContainer = E('div', {
+      className: 'module-container',
+      parent: document.body
+    });
 
     // Handle hash changes
     var hashchange = function() {
@@ -24,9 +27,8 @@ var app = (function(window, document, E, ajax) {
         app.load('login');
         new Alert({
           message: 'Your session has expired',
-          type: 'info',
-          timeout: true
-        });
+          type: 'info'
+        }).open();
       } else if (xhr.status !== 400) {
         new Alert({
           message: xhr.status + ' Error!',
