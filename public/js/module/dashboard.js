@@ -312,12 +312,53 @@ app.module(function(E, ajax) {
             className: 'btn btn-default',
             textContent: isMember ? 'Leave' : 'Join',
             onclick: function() {
-              var action = isMember ? 'delete' : 'put';
-              ajax[action]('team_member', {
-                team_id: team.id
-              }).then(function() {
-                app.reload();
-              });
+              var action = function() {
+                var method = isMember ? 'delete' : 'put';
+                ajax[method]('team_member', {
+                  team_id: team.id
+                }).then(function() {
+                  app.reload();
+                }); 
+              };
+
+              if (currentTeam && !isMember) {
+                var modal = new Modal({
+                  title: 'Leave ' + currentTeam.name + ' ?'
+                });
+
+                E('div', {
+                  textContent:
+                    'You are already a member of ' +
+                    currentTeam.name +
+                    '. Are you sure you want to switch to ' +
+                    team.name + '?',
+                  
+                  parent: modal.body
+                });
+
+                E('button', {
+                  className: 'btn btn-default',
+                  textContent: 'Yes',
+                  onclick: function() {
+                    modal.close();
+                    action();
+                  },
+                  parent: modal.body
+                });
+
+                E('button', {
+                  className: 'btn btn-default',
+                  textContent: 'No',
+                  onclick: function() {
+                    modal.close();
+                  },
+                  parent: modal.body
+                });
+
+                modal.open();
+              } else {
+                action();
+              }
             },
             parent: heading
           });
