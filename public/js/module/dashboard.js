@@ -9,11 +9,16 @@ app.module(function(E, ajax) {
     navbar(container);
 
     var body = E('div', {
-      className: 'modal-body',
-      parent: container
+      className: 'modal-body'
     });
 
-    projects(body);
+    projects(body).then(function() {
+      container.appendChild(body);
+      body.animate([
+        {opacity: 0},
+        {opacity: 1}
+      ]);
+    });
   };
 
   function navbar(container) {
@@ -99,7 +104,7 @@ app.module(function(E, ajax) {
       parent: section
     });
     
-    ajax.get('projects').then(function(projects) {
+    return ajax.get('projects').then(function(projects) {
       if (projects.length === 0) {
         E('h5', {
           textContent: 'No projects exist',
@@ -159,6 +164,7 @@ app.module(function(E, ajax) {
 
         var body = E('div', {
           className: 'panel-body',
+          parent: panel
         });
 
         E('p', {
@@ -184,13 +190,7 @@ app.module(function(E, ajax) {
           parent: body
         });
 
-        teams(body, project).then(function() {
-          panel.appendChild(body);
-          body.animate([
-            {opacity: 0},
-            {opacity: 1}
-          ]);
-        });
+        return teams(body, project);
       });
     });
   }
