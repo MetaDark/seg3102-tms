@@ -16,7 +16,7 @@ app.use(session({
   resave: false
 }));
 
-app.use(express.static(__dirname + '/static'));
+app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
 
 /* Register User */
