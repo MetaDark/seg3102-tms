@@ -1,3 +1,5 @@
+// TODO: Refactor, this file is starting to get pretty large
+
 var sqlite3 = require('sqlite3');
 var db = new sqlite3.Database('db/db.sqlite3');
 
@@ -229,6 +231,7 @@ app.post('/ajax/project', function(req, res) {
   });
 });
 
+/* Delete Project */
 app.delete('/ajax/project', function(req, res) {
   if (!req.session.user) {
     res.status(401).json();
@@ -401,24 +404,43 @@ app.delete('/ajax/team', function(req, res) {
   });
 });
 
-/* Join Team */
-app.post('/ajax/team/join', function(req, res) {
+/* Get the user's team for a project */
+app.get('/ajax/team/mine', function(req, res) {
   if (!req.session.user) {
     res.status(401).json();
     return;
   }
 
-  res.send('Joined Team');
-});
+  var params = req.query;
+  var invalid = [];
 
-/* Leave Team */
-app.post('/ajax/team/leave', function(req, res) {
-  if (!req.session.user) {
-    res.status(401).json();
+  if (!params.project_id)  {
+    invalid.push('project_id');
+  }
+
+  if (invalid.length > 0) {
+    res.status(400).json({invalid: invalid});
     return;
   }
   
-  res.send('Left Team');
+  var query =
+        'SELECT teams.* ' +
+        'FROM teams, team_members WHERE ' +
+        'team_members.member_id = $user_id AND ' +
+        'teams.project_id = $project_id';
+
+  db.get(query, {
+    $user_id: req.session.user.id,
+    $project_id: params.project_id,
+  }, function(err, team) {
+    if (err) {
+      console.log(err);
+      res.status(500).json();
+      return;
+    }
+
+    res.json(team);
+  });
 });
 
 /* List Teams in a project */
@@ -451,6 +473,127 @@ app.get('/ajax/teams/project', function(req, res) {
     }
 
     res.json(teams);
+  });
+});
+
+/* Join Team */
+app.put('/ajax/team_member', function(req, res) {
+  if (!req.session.user) {
+    res.status(401).json();
+    return;
+  }
+
+  var params = req.body;
+  var invalid = [];
+
+  if (!params.team_id)  {
+    invalid.push('team_id');
+  }
+
+  if (invalid.length > 0) {
+    res.status(400).json({invalid: invalid});
+    return;
+  }
+
+  db.serialize(function() {
+    var input = {
+      $team_id: params.team_id,
+      $user_id: req.session.user.id
+    };
+
+    // Remove user from any previous teams
+    var deleteQuery =
+          'DELETE FROM team_members WHERE ' +
+          'team_id = $team_id AND ' +
+          'member_id = $user_id';
+    
+    db.run(deleteQuery, input, function(err) {
+      if (err) {
+        console.log(err);
+        res.status(500).json();
+        return;
+      }
+    });
+
+    // Add them to the new team
+    var addQuery =
+          'INSERT INTO team_members ' +
+          '(team_id, member_id, accepted) ' +
+          'VALUES($team_id, $user_id, 0)';
+
+    db.run(addQuery, input, function(err) {
+      if (err) {
+        console.log(err);
+        res.status(500).json();
+        return;
+      }
+
+      res.json();
+    })
+  });
+});
+
+/* Approve a member to join a team */
+app.post('/ajax/team_member/approve', function(req, res) {
+  if (!req.session.user) {
+    res.status(401).json();
+    return;
+  }
+
+  // TODO: Validate that the user has permissions to approve a team member
+  var query =
+        'UPDATE team_members SET accepted=1 ' +
+        'WHERE id = $id';
+
+  db.run(query, {
+    $id: params.id
+  }, function(err) {
+    if (err) {
+      console.log(err);
+      res.status(500).json();
+      return;
+    }
+
+    res.json();
+  });
+});
+
+/* Leave Team */
+app.delete('/ajax/team_member', function(req, res) {
+  if (!req.session.user) {
+    res.status(401).json();
+    return;
+  }
+
+  var params = req.body;
+  var invalid = [];
+
+  if (!params.team_id)  {
+    invalid.push('team_id');
+  }
+
+  if (invalid.length > 0) {
+    res.status(400).json({invalid: invalid});
+    return;
+  }
+
+  // TODO: Validate that the user has permissions to leave a team
+  var query =
+        'DELETE FROM team_members WHERE ' +
+        'team_id = $team_id AND ' +
+        'member_id = $user_id';
+
+  db.run(query, {
+    $team_id: params.team_id,
+    $user_id: req.session.user.id
+  }, function(err) {
+    if (err) {
+      console.log(err);
+      res.status(500).json();
+      return;
+    }
+
+    res.json();
   });
 });
 

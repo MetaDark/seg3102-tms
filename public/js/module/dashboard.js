@@ -220,10 +220,18 @@ app.module(function(E, ajax) {
       parent: section
     });
 
-    ajax.get('teams/project', {
-      project_id: project.id
-    }).then(function(teams) {
-      teams.forEach(function (team) {
+    Promise.all([
+      ajax.get('teams/project', {
+        project_id: project.id
+      }),
+      ajax.get('team/mine', {
+        project_id: project.id
+      }),
+    ]).then(function(results) {
+      var projectTeams = results[0];
+      var myTeam = results[1];
+      
+      projectTeams.forEach(function (team) {
         var panel = E('div', {
           className: 'panel panel-primary',
           parent: section
@@ -233,7 +241,7 @@ app.module(function(E, ajax) {
           className: 'panel-heading',
           children: [E('h2', {
             className: 'panel-title',
-            textContent: team.name + ' - ' + team.liason_id
+            textContent: team.name
           })],
           parent: panel
         });
@@ -260,11 +268,30 @@ app.module(function(E, ajax) {
             },
             parent: heading
           });
+        } else {
+          E('div', {
+            className: 'btn btn-default',
+            textContent: myTeam && team.id === myTeam.id ?
+              'Leave' : 'Join',
+            onclick: function() {
+              var action = myTeam && team.id === myTeam.id ?
+                    'delete' : 'put';
+              
+              ajax[action]('team_member', {
+                team_id: team.id
+              }).then(function() {
+                app.reload();
+              });
+            },
+            parent: heading
+          });
         }
 
         E('div', {
           className: 'panel-body',
-          textContent: 'test',
+          children: [E('b', {
+            textContent: 'Liason: '
+          }), team.liason_id],
           parent: panel
         });
       });
