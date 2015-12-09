@@ -423,7 +423,12 @@ app.get('/ajax/teams/project', function(req, res) {
     return;
   }
   
-  var query = 'SELECT * FROM teams WHERE project_id = $project_id';
+  var query =
+        'SELECT teams.*, users.name AS liason_name ' +
+        'FROM teams, users ' +
+        'WHERE ' +
+        'teams.project_id = $project_id AND ' +
+        'teams.liason_id = users.id';
   
   db.all(query, {
     $project_id: params.project_id,

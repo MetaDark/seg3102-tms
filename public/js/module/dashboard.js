@@ -319,7 +319,7 @@ app.module(function(E, ajax) {
           className: 'panel-body',
           children: [E('b', {
             textContent: 'Liason: '
-          }), team.liason_id],
+          }), team.liason_name],
           parent: panel
         });
       });
