@@ -56,7 +56,7 @@ app.module(function(E, ajax) {
     });
 
     E('li', {
-      children: [E('div',  {
+      children: [E('button',  {
         className: 'btn btn-default',
         textContent: 'Logout',
         style: {
@@ -80,7 +80,7 @@ app.module(function(E, ajax) {
     });
 
     if (app.user.is_instructor) {
-      E('div', {
+      E('button', {
         className: 'btn btn-default',
         textContent: 'Create Project',
         onclick: function() {
@@ -91,9 +91,16 @@ app.module(function(E, ajax) {
     }
 
     ajax.get('projects').then(function(projects) {
+      if (projects.length === 0) {
+        E('p', {
+          textContent: 'No projects exist',
+          parent: container
+        });
+      }
+      
       projects.forEach(function (project) {
         var panel = E('div', {
-          className: 'panel panel-primary',
+          className: 'panel panel-primary project',
           parent: section
         });
 
@@ -106,8 +113,19 @@ app.module(function(E, ajax) {
           parent: panel
         });
 
+        E('button', {
+          className: 'btn btn-default',
+          textContent: 'Create Team',
+          onclick: function() {
+            editTeam({
+              project_id: project.id
+            });
+          },
+          parent: heading
+        });
+        
         if (app.user.is_instructor) {
-          E('div', {
+          E('button', {
             className: 'btn btn-default',
             textContent: 'Edit',
             onclick: function() {
@@ -116,7 +134,7 @@ app.module(function(E, ajax) {
             parent: heading
           });
 
-          E('div', {
+          E('button', {
             className: 'btn btn-default',
             textContent: 'Delete',
             onclick: function() {
@@ -154,10 +172,7 @@ app.module(function(E, ajax) {
           parent: body
         });
 
-        E('p', {
-          children: [E('b', {
-            textContent: 'Teams: '
-          })],
+        E('hr', {
           parent: body
         });
 
@@ -209,31 +224,38 @@ app.module(function(E, ajax) {
       parent: container
     });
 
-    E('div', {
-      className: 'btn btn-default',
-      textContent: 'Create Team',
-      onclick: function() {
-        editTeam({
-          project_id: project.id
-        });
-      },
-      parent: section
-    });
+    ajax.get('teams/project', {
+      project_id: project.id  
+    }).then(function(teams) {
+      var currentTeam = null;
+      teams.forEach(function(team) {
+        if (currentTeam) return;
+        
+        if (team.liason_id === app.user.id) {
+          currentTeam = team;
+        } else {
+          team.members.some(function(member) {
+            if (member.id === app.user.id) {
+              currentTeam = team;
+            }
+          });
+        }
+      });
 
-    Promise.all([
-      ajax.get('teams/project', {
-        project_id: project.id
-      }),
-      ajax.get('team/mine', {
-        project_id: project.id
-      }),
-    ]).then(function(results) {
-      var projectTeams = results[0];
-      var myTeam = results[1];
+      if (teams.length === 0) {
+        E('p', {
+          textContent: 'No teams',
+          parent: container
+        });
+      }
       
-      projectTeams.forEach(function (team) {
+      teams.forEach(function (team) {
+        var isMember = team.members.some(function(member) {
+          return member.id === app.user.id;
+        });
+        
         var panel = E('div', {
-          className: 'panel panel-primary',
+          className: 'panel panel-primary team',
           parent: section
         });
 
@@ -246,8 +268,9 @@ app.module(function(E, ajax) {
           parent: panel
         });
 
+        // Allow liasons and instructors to edit their teams
         if (app.user.is_instructor || app.user.id === team.liason_id) {
-          E('div', {
+          E('button', {
             className: 'btn btn-default',
             textContent: 'Edit',
             onclick: function() {
@@ -256,7 +279,7 @@ app.module(function(E, ajax) {
             parent: heading
           });
 
-          E('div', {
+          E('button', {
             className: 'btn btn-default',
             textContent: 'Delete',
             onclick: function() {
@@ -268,15 +291,20 @@ app.module(function(E, ajax) {
             },
             parent: heading
           });
+
+        // Only allow a user to join / leave a team if they are not a liason
         } else {
-          E('div', {
+          E('button', {
             className: 'btn btn-default',
-            textContent: myTeam && team.id === myTeam.id ?
-              'Leave' : 'Join',
+            textContent: isMember ? 'Leave' : 'Join',
             onclick: function() {
-              var action = myTeam && team.id === myTeam.id ?
-                    'delete' : 'put';
-              
+              if (currentTeam) {
+                // new Modal({
+                //   title: 'Leave ' + currentTeam.name + '?',
+                //   children: [E('')]
+                // }).open();
+              }
+              var action = isMember ? 'delete' : 'put';
               ajax[action]('team_member', {
                 team_id: team.id
               }).then(function() {
