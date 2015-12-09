@@ -2,7 +2,7 @@ function Modal(params) {
   var modal = this;
 
   this.elem = E('div', {
-    className: 'floating-box'
+    className: 'floating-box shade'
   });
 
   this.dialog = E('div', {
@@ -53,9 +53,9 @@ function Modal(params) {
 Modal.prototype.open = function() {
   document.body.appendChild(this.elem);
   window.addEventListener('keydown', this.keydown, false);
-  this.dialog.animate([
+  this.elem.animate([
     {opacity: 0},
-    {opacity: 1},
+    {opacity: 1}
   ], 150);
 };
 
@@ -63,9 +63,14 @@ Modal.prototype.close = function() {
   var modal = this;
 
   this.dialog.animate([
-    {opacity: 1, transform: 'scale(1)'},
-    {opacity: 1, transform: 'scale(1.1)'},
-    {opacity: 0, transform: 'scale(0.3)'},
+    {transform: 'scale(1)'},
+    {transform: 'scale(1.1)'},
+    {transform: 'scale(0.3)'},
+  ], 150);
+
+  this.elem.animate([
+    {opacity: 1},
+    {opacity: 0}
   ], 150).onfinish = function() {
     var parent = modal.elem.parentElement;
     if (parent) {
