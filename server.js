@@ -492,10 +492,10 @@ app.put('/ajax/team_member', function(req, res) {
   db.serialize(function() {
     var input = {
       $team_id: params.team_id,
-      $user_id: req.session.user.id
+      $member_id: params.member_id || req.session.user.id
     };
 
-    // Remove user from any previous teams under the same project
+    // Remove member from any previous teams under the same project
     var deleteQuery =
       'DELETE FROM team_members ' +
       'WHERE ' +
@@ -507,7 +507,7 @@ app.put('/ajax/team_member', function(req, res) {
   	        'newteam.id = $team_id AND ' +
             'newteam.project_id = oldteam.project_id' +
 	    ') AND ' +
-	    'member_id = $user_id';
+	    'member_id = $member_id';
 
     db.run(deleteQuery, input, function(err) {
       if (err) {
@@ -521,7 +521,7 @@ app.put('/ajax/team_member', function(req, res) {
     var addQuery =
       'INSERT INTO team_members ' +
       '(team_id, member_id, accepted) ' +
-      'VALUES($team_id, $user_id, 0)';
+      'VALUES($team_id, $member_id, 0)';
 
     db.run(addQuery, input, function(err) {
       if (err) {
@@ -602,11 +602,11 @@ app.delete('/ajax/team_member', function(req, res) {
   var query =
         'DELETE FROM team_members WHERE ' +
         'team_id = $team_id AND ' +
-        'member_id = $user_id';
+        'member_id = $member_id';
 
   db.run(query, {
     $team_id: params.team_id,
-    $user_id: req.session.user.id
+    $member_id: params.member_id || req.session.user.id
   }, function(err) {
     if (err) {
       console.log(err);

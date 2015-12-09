@@ -366,6 +366,20 @@ app.module(function(E, ajax) {
               },
               parent: memberElem
             });
+
+            E('button', {
+              className: 'btn btn-default',
+              textContent: 'Deny',
+              onclick: function() {
+                ajax.delete('team_member', {
+                  team_id: team.id,
+                  member_id: member.id
+                }).then(function() {
+                  app.reload();
+                });
+              },
+              parent: memberElem
+            });
           } else {
             E('span', {
               textContent: ' - Not yet accepted',
