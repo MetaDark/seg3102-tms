@@ -78,23 +78,18 @@ app.module(function(E, ajax) {
       parent: container
     });
 
-    var source;
     if (app.user.is_instructor) {
-      source = 'projects/mine';
-
       E('div', {
         className: 'btn btn-default',
-        textContent: 'Create',
+        textContent: 'Create Project',
         onclick: function() {
           editProject({});
         },
         parent: section
       });
-    } else {
-      source = 'projects/available';
     }
 
-    ajax.get(source).then(function(projects) {
+    ajax.get('projects').then(function(projects) {
       projects.forEach(function (project) {
         var panel = E('div', {
           className: 'panel panel-primary',
@@ -172,7 +167,7 @@ app.module(function(E, ajax) {
 
   function editProject(project) {
     var modal = new Modal({
-      title: project.id ? 'Edit' : 'Create' + ' Project'
+      title: (project.id ? 'Edit' : 'Create') + ' Project'
     });
 
     form({
@@ -224,39 +219,6 @@ app.module(function(E, ajax) {
       parent: section
     });
 
-    E('div', {
-      className: 'btn btn-default',
-      textContent: 'Edit Team',
-      onclick: function() {
-        editTeam({
-          name: 'Test'
-        });
-      },
-      parent: section
-    });
-
-    E('div', {
-      className: 'btn btn-default',
-      textContent: 'Join Team',
-      onclick: function() {
-        ajax.post('team/join').then(function(response) {
-          console.log(response);
-        });
-      },
-      parent: section
-    });
-
-    E('div', {
-      className: 'btn btn-default',
-      textContent: 'Leave Team',
-      onclick: function() {
-        ajax.post('team/leave').then(function(response) {
-          console.log(response);
-        });
-      },
-      parent: section
-    });
-
     ajax.get('teams/project', {
       project_id: project.id
     }).then(function(teams) {
@@ -266,14 +228,38 @@ app.module(function(E, ajax) {
           parent: section
         });
 
-        E('div', {
+        var heading = E('div', {
           className: 'panel-heading',
           children: [E('h2', {
             className: 'panel-title',
             textContent: team.name + ' - ' + team.liason_id
           })],
           parent: panel
-        })
+        });
+
+        if (app.user.id === team.liason_id) {
+          E('div', {
+            className: 'btn btn-default',
+            textContent: 'Edit',
+            onclick: function() {
+              editTeam(team);
+            },
+            parent: heading
+          });
+
+          E('div', {
+            className: 'btn btn-default',
+            textContent: 'Delete',
+            onclick: function() {
+              ajax.delete('team', {
+                id: team.id
+              }).then(function() {
+                app.reload();
+              });            
+            },
+            parent: heading
+          });
+        }
 
         E('div', {
           className: 'panel-body',
@@ -286,7 +272,7 @@ app.module(function(E, ajax) {
 
   function editTeam(team) {
     var modal = new Modal({
-      title: team.id ? 'Edit' : 'Create' + ' Team'
+      title: (team.id ? 'Edit' : 'Create') + ' Team'
     });
 
     form({
