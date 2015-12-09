@@ -288,11 +288,6 @@ app.put('/ajax/team', function(req, res) {
     return;
   }
 
-  if (!req.session.user) {
-    res.status(401).json();
-    return;
-  }
-
   var params = req.body;
   var invalid = [];
 
@@ -308,7 +303,8 @@ app.put('/ajax/team', function(req, res) {
     res.status(400).json({invalid: invalid});
     return;
   }
-  
+
+  // TODO: Validate that the user has permissions to create teams
   var query =
         'INSERT INTO teams ' +
         '(name, project_id, liason_id)' +
@@ -336,7 +332,73 @@ app.post('/ajax/team', function(req, res) {
     return;
   }
 
-  res.send('Edit team');
+  var params = req.body;
+  var invalid = [];
+
+  if (!params.id) {
+    invalid.push('id');
+  }
+
+  if (!params.name)  {
+    invalid.push('name');
+  }
+
+  if (invalid.length > 0) {
+    res.status(400).json({invalid: invalid});
+    return;
+  }
+
+  // TODO: Validate that the user has permissions to edit the team
+  var query =
+        'UPDATE teams SET name=$name ' +
+        'WHERE id = $id';
+
+  db.run(query, {
+    $id: params.id,
+    $name: params.name
+  }, function(err) {
+    if (err) {
+      console.log(err);
+      res.status(500).json();
+      return;
+    }
+
+    res.json();
+  });
+});
+
+/* Delete Team */
+app.delete('/ajax/team', function(req, res) {
+  if (!req.session.user) {
+    res.status(401).json();
+    return;
+  }
+
+  var params = req.body;
+  var invalid = [];
+
+  if (!params.id) {
+    invalid.push('id');
+  }
+
+  if (invalid.length > 0) {
+    res.status(400).json({invalid: invalid});
+    return;
+  }
+
+  // TODO: Validate that the user has permissions to delete the team
+  var query = 'DELETE FROM teams WHERE id = $id';
+  db.run(query, {
+    $id: params.id
+  }, function(err) {
+    if (err) {
+      console.log(err);
+      res.status(500).json();
+      return;
+    }
+
+    res.json();
+  });
 });
 
 /* Join Team */
