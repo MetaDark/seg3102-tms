@@ -78,6 +78,11 @@ app.module(function(E, ajax) {
     var section = E('div', {
       parent: container
     });
+    
+    E('h4', {
+      textContent: 'Projects:',
+      parent: section
+    });
 
     if (app.user.is_instructor) {
       E('button', {
@@ -90,6 +95,10 @@ app.module(function(E, ajax) {
       });
     }
 
+    E('hr', {
+      parent: section
+    });
+    
     ajax.get('projects').then(function(projects) {
       if (projects.length === 0) {
         E('h5', {
@@ -338,7 +347,7 @@ app.module(function(E, ajax) {
             return;
           }
           
-          if (team.liason_id === app.user.id) {
+          if (app.user.is_instructor || team.liason_id === app.user.id) {
             E('button', {
               className: 'btn btn-default',
               textContent: 'Accept',
