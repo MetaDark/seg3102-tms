@@ -123,32 +123,6 @@ app.post('/ajax/logout', function(req, res) {
   res.json();
 });
 
-/* Obtain list of classes that user is a member of */
-app.get('/ajax/classes', function(req, res) {
-  if (!req.session.user) {
-    res.status(401).json();
-    return;
-  }
-
-  var query =
-        'SELECT classes.* ' +
-        'FROM classes, class_members WHERE ' +
-        'class_members.member_id = $user_id AND ' +
-        'class_members.class_id = classes.id';
-
-  db.all(query, {
-    $user_id: req.session.user.id
-  }, function(err, classes) {
-    if (err) {
-      console.log(err);
-      res.status(500).json();
-      return;
-    }
-
-    res.json(classes);
-  });
-});
-
 /* Create Project */
 app.put('/ajax/project', function(req, res) {
   if (!req.session.user) {
@@ -289,50 +263,14 @@ app.delete('/ajax/project', function(req, res) {
   });
 });
 
-/* List instructor's projects */
-app.get('/ajax/projects/mine', function(req, res) {
-  if (!req.session.user) {
-    res.status(401).json();
-    return;
-  }
-  
-  if (!req.session.user.is_instructor) {
-    res.status(403).json();
-    return;
-  }
-
-  var query =
-        'SELECT projects.* ' +
-        'FROM projects, classes WHERE ' +
-        'classes.instructor_id = $user_id AND ' +
-        'classes.id = projects.class_id';
-
-  db.all(query, {
-    $user_id: req.session.user.id
-  }, function(err, projects) {
-    if (err) {
-      console.log(err);
-      res.status(500).json();
-      return;
-    }
-
-    res.json(projects);
-  });
-});
-
-/* List projects available to a student */
-app.get('/ajax/projects/available', function(req, res) {
+/* List projects */
+app.get('/ajax/projects', function(req, res) {
   if (!req.session.user) {
     res.status(401).json();
     return;
   }
 
-  var query =
-        'SELECT projects.* ' +
-        'FROM projects, class_members WHERE ' +
-        'class_members.member_id = $user_id AND ' +
-        'class_members.class_id = projects.class_id';
-  
+  var query = 'SELECT * FROM projects';
   db.all(query, function(err, projects) {
     if (err) {
       console.log(err);

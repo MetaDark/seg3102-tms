@@ -8,21 +8,6 @@ CREATE TABLE users (
   is_instructor bit NOT NULL,
   email text NOT NULL UNIQUE);
 
-DROP TABLE IF EXISTS classes;
-CREATE TABLE classes (
-  id text NOT NULL PRIMARY KEY,
-  instructor_id text NOT NULL,
-  name text NOT NULL,
-  FOREIGN KEY(instructor_id) REFERENCES users(id));
-
-DROP TABLE IF EXISTS class_members;
-CREATE TABLE class_members (
-  class_id text NOT NULL,
-  member_id text NOT NULL,
-  UNIQUE(class_id, member_id),
-  FOREIGN KEY(class_id) REFERENCES classes(id),
-  FOREIGN KEY(member_id) REFERENCES users(id));
-
 DROP TABLE IF EXISTS projects;
 CREATE TABLE projects (
   id integer NOT NULL PRIMARY KEY,
