@@ -404,45 +404,6 @@ app.delete('/ajax/team', function(req, res) {
   });
 });
 
-/* Get the user's team for a project */
-app.get('/ajax/team/mine', function(req, res) {
-  if (!req.session.user) {
-    res.status(401).json();
-    return;
-  }
-
-  var params = req.query;
-  var invalid = [];
-
-  if (!params.project_id)  {
-    invalid.push('project_id');
-  }
-
-  if (invalid.length > 0) {
-    res.status(400).json({invalid: invalid});
-    return;
-  }
-  
-  var query =
-        'SELECT teams.* ' +
-        'FROM teams, team_members WHERE ' +
-        'team_members.member_id = $user_id AND ' +
-        'teams.project_id = $project_id';
-
-  db.get(query, {
-    $user_id: req.session.user.id,
-    $project_id: params.project_id,
-  }, function(err, team) {
-    if (err) {
-      console.log(err);
-      res.status(500).json();
-      return;
-    }
-
-    res.json(team);
-  });
-});
-
 /* List Teams in a project */
 app.get('/ajax/teams/project', function(req, res) {
   if (!req.session.user) {
@@ -463,6 +424,7 @@ app.get('/ajax/teams/project', function(req, res) {
   }
   
   var query = 'SELECT * FROM teams WHERE project_id = $project_id';
+  
   db.all(query, {
     $project_id: params.project_id,
   }, function(err, teams) {
@@ -472,7 +434,34 @@ app.get('/ajax/teams/project', function(req, res) {
       return;
     }
 
-    res.json(teams);
+    // Obtain each of the team members within each team
+    var subquery =
+          'SELECT users.id, users.name ' +
+          'FROM team_members, users WHERE ' +
+          'team_members.team_id = $team_id AND ' +
+          'team_members.member_id = users.id';
+    
+    if (teams.length === 0) {
+      res.json(teams);
+    } else {
+      var teamsLeft = teams.length;
+      teams.forEach(function(team) {
+        db.all(subquery, {
+          $team_id: team.id
+        }, function(err, members) {
+          if (err) {
+            console.log(err);
+            res.status(500).json();
+            return;
+          }
+
+          team.members = members;
+          if (--teamsLeft === 0) {
+            res.json(teams);
+          }
+        });
+      });
+    }
   });
 });
 
