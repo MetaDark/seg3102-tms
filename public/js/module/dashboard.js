@@ -65,6 +65,7 @@ app.module(function(E, ajax) {
         },
         onclick: function() {
           ajax.post('logout').then(function() {
+            delete app.user;
             app.load('login');
           });
         }

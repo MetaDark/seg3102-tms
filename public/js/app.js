@@ -10,13 +10,32 @@ var app = (function(window, document, E, ajax) {
   app.start = function() {
     moduleContainer = document.body;
 
+    // Handle hash changes
     var hashchange = function() {
       var id = window.location.hash.slice(1);
       app.load(id);
     };
     
     window.addEventListener('hashchange', hashchange, false);
-    
+
+    // Handle ajax errors
+    ajax.onerror = function(xhr) {
+      if (xhr.status === 401) {
+        app.load('login');
+        new Alert({
+          message: 'Your session has expired',
+          type: 'info',
+          timeout: true
+        });
+      } else if (xhr.status !== 400) {
+        new Alert({
+          message: xhr.status + ' Error!',
+          type: 'danger'
+        }).open();
+      }
+    };
+
+    // Authenticate the user, otherwise redirect to login module
     ajax.post('login').then(function(user) {
       app.user = user;
       hashchange();

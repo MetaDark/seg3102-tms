@@ -1,6 +1,10 @@
 'use strict';
 
 var ajax = (function () {
+  var ajax = {
+    onerror: null
+  };
+  
   function urlencode(obj) {
     var arr = [];
     for (var key in obj) {
@@ -17,15 +21,25 @@ var ajax = (function () {
     var promise = new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest();
       xhr.addEventListener('load', function(e) {
-        var next = this.status === 200 ? resolve : reject;
-        var response = this.responseText;
-        if (!response) {
-          next();
-        } else {
+        // Parse response
+        var response;
+        if (this.responseText) {
           try {
-            next(JSON.parse(response));
+            response = JSON.parse(this.responseText);
           } catch (e) {
-            next(response);
+            response = this.responseText;
+          }
+        }
+
+        // Pass results back to caller 
+        if (this.status >= 200 && this.status < 300) {
+          resolve(response);
+        } else {
+          reject(response);
+          if (ajax.onerror) {
+            ajax.onerror(this);
+          } else {
+            reject(response);
           }
         }
       });
@@ -46,11 +60,11 @@ var ajax = (function () {
     
     return promise;
   }
+
+  ajax.get = request.bind(null, 'GET');
+  ajax.put = request.bind(null, 'PUT');
+  ajax.post = request.bind(null, 'POST');
+  ajax.delete = request.bind(null, 'DELETE');
   
-  return {
-    get: request.bind(null, 'GET'),
-    put: request.bind(null, 'PUT'),
-    post: request.bind(null, 'POST'),
-    delete: request.bind(null, 'DELETE')
-  };
+  return ajax;
 })();
