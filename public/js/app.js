@@ -24,6 +24,7 @@ var app = (function(window, document, E, ajax) {
     // Handle ajax errors
     ajax.onerror = function(xhr) {
       if (xhr.status === 401) {
+        delete app.user;
         app.load('login');
         new Alert({
           message: 'Your session has expired',
