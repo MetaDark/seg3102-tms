@@ -92,7 +92,7 @@ app.module(function(E, ajax) {
 
     ajax.get('projects').then(function(projects) {
       if (projects.length === 0) {
-        E('p', {
+        E('h5', {
           textContent: 'No projects exist',
           parent: container
         });
@@ -298,12 +298,6 @@ app.module(function(E, ajax) {
             className: 'btn btn-default',
             textContent: isMember ? 'Leave' : 'Join',
             onclick: function() {
-              if (currentTeam) {
-                // new Modal({
-                //   title: 'Leave ' + currentTeam.name + '?',
-                //   children: [E('')]
-                // }).open();
-              }
               var action = isMember ? 'delete' : 'put';
               ajax[action]('team_member', {
                 team_id: team.id
@@ -315,12 +309,56 @@ app.module(function(E, ajax) {
           });
         }
 
-        E('div', {
+        var body = E('div', {
           className: 'panel-body',
+          parent: panel
+        });
+
+        var liason = E('p', {
           children: [E('b', {
             textContent: 'Liason: '
           }), team.liason_name],
-          parent: panel
+          parent: body
+        });
+
+        var liason = E('p', {
+          children: [E('b', {
+            textContent: 'Members: '
+          }), team.members.length === 0 ? 'No other members' : ''],
+          parent: body
+        });
+        
+        team.members.forEach(function(member) {
+          var memberElem = E('p', {
+            textContent: member.name,
+            parent: body
+          });
+
+          if (member.accepted) {
+            return;
+          }
+          
+          if (team.liason_id === app.user.id) {
+            E('button', {
+              className: 'btn btn-default',
+              textContent: 'Accept',
+              onclick: function() {
+                ajax.post('team_member/accept', {
+                  team_id: team.id,
+                  member_id: member.id
+                }).then(function() {
+                  app.reload();
+                });
+              },
+              parent: memberElem
+            });
+          } else {
+            E('span', {
+              textContent: ' - Not yet accepted',
+              parent: memberElem
+            });
+          }
+          
         });
       });
     });

@@ -441,7 +441,7 @@ app.get('/ajax/teams/project', function(req, res) {
 
     // Obtain each of the team members within each team
     var subquery =
-          'SELECT users.id, users.name ' +
+          'SELECT users.id, users.name, team_members.accepted ' +
           'FROM team_members, users WHERE ' +
           'team_members.team_id = $team_id AND ' +
           'team_members.member_id = users.id';
@@ -527,20 +527,39 @@ app.put('/ajax/team_member', function(req, res) {
   });
 });
 
-/* Approve a member to join a team */
-app.post('/ajax/team_member/approve', function(req, res) {
+/* Accept a member to join a team */
+app.post('/ajax/team_member/accept', function(req, res) {
   if (!req.session.user) {
     res.status(401).json();
     return;
   }
 
-  // TODO: Validate that the user has permissions to approve a team member
+  var params = req.body;
+  var invalid = [];
+
+  if (!params.team_id)  {
+    invalid.push('team_id');
+  }
+
+  if (!params.team_id)  {
+    invalid.push('member_id');
+  }
+
+  if (invalid.length > 0) {
+    res.status(400).json({invalid: invalid});
+    return;
+  }
+  
+  // TODO: Validate that the user has permissions to accept a team member
   var query =
-        'UPDATE team_members SET accepted=1 ' +
-        'WHERE id = $id';
+        'UPDATE team_members SET accepted = 1 ' +
+        'WHERE ' +
+        'team_id = $team_id AND ' +
+        'member_id = $member_id';
 
   db.run(query, {
-    $id: params.id
+    $team_id: params.team_id,
+    $member_id: params.member_id
   }, function(err) {
     if (err) {
       console.log(err);
