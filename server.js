@@ -479,7 +479,7 @@ app.put('/ajax/team_member', function(req, res) {
 
   var params = req.body;
   var invalid = [];
-
+  
   if (!params.team_id)  {
     invalid.push('team_id');
   }
@@ -495,12 +495,20 @@ app.put('/ajax/team_member', function(req, res) {
       $user_id: req.session.user.id
     };
 
-    // Remove user from any previous teams
+    // Remove user from any previous teams under the same project
     var deleteQuery =
-          'DELETE FROM team_members WHERE ' +
-          'team_id = $team_id AND ' +
-          'member_id = $user_id';
-    
+      'DELETE FROM team_members ' +
+      'WHERE ' +
+        'team_id IN (' +
+          'SELECT oldteam.id FROM ' +
+            'teams as newteam,' +
+            'teams as oldteam ' +
+          'WHERE ' +
+  	        'newteam.id = $team_id AND ' +
+            'newteam.project_id = oldteam.project_id' +
+	    ') AND ' +
+	    'member_id = $user_id';
+
     db.run(deleteQuery, input, function(err) {
       if (err) {
         console.log(err);
@@ -511,9 +519,9 @@ app.put('/ajax/team_member', function(req, res) {
 
     // Add them to the new team
     var addQuery =
-          'INSERT INTO team_members ' +
-          '(team_id, member_id, accepted) ' +
-          'VALUES($team_id, $user_id, 0)';
+      'INSERT INTO team_members ' +
+      '(team_id, member_id, accepted) ' +
+      'VALUES($team_id, $user_id, 0)';
 
     db.run(addQuery, input, function(err) {
       if (err) {
@@ -523,7 +531,7 @@ app.put('/ajax/team_member', function(req, res) {
       }
 
       res.json();
-    })
+    });
   });
 });
 
