@@ -238,7 +238,7 @@ app.module(function(E, ajax) {
           parent: panel
         });
 
-        if (app.user.id === team.liason_id) {
+        if (app.user.is_instructor || app.user.id === team.liason_id) {
           E('div', {
             className: 'btn btn-default',
             textContent: 'Edit',
