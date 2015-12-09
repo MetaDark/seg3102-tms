@@ -307,7 +307,7 @@ app.module(function(E, ajax) {
           });
 
         // Only allow a user to join / leave a team if they are not a liason
-        } else {
+        } else if (isMember || team.members.length + 1 < project.max_team_size) {
           E('button', {
             className: 'btn btn-default',
             textContent: isMember ? 'Leave' : 'Join',
