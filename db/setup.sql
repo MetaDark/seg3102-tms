@@ -22,8 +22,8 @@ CREATE TABLE teams (
   name text NOT NULL,
   project_id integer NOT NULL,
   liason_id text NOT NULL,
-  FOREIGN KEY(project_id) REFERENCES projects(id),
-  FOREIGN KEY(liason_id) REFERENCES users(id));
+  FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE,
+  FOREIGN KEY(liason_id) REFERENCES users(id) ON DELETE CASCADE);
 
 DROP TABLE IF EXISTS team_members;
 CREATE TABLE team_members (
@@ -31,8 +31,8 @@ CREATE TABLE team_members (
   member_id text NOT NULL,
   accepted bit NOT NULL,
   UNIQUE(team_id, member_id),
-  FOREIGN KEY(team_id) REFERENCES teams(id),
-  FOREIGN KEY(member_id) REFERENCES users(id));
+  FOREIGN KEY(team_id) REFERENCES teams(id) ON DELETE CASCADE,
+  FOREIGN KEY(member_id) REFERENCES users(id) ON DELETE CASCADE);
 
 /* == Dummy Data == */
 INSERT INTO users (id, password, salt, name, email, is_instructor)

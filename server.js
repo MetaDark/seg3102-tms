@@ -392,6 +392,15 @@ app.get('/ajax/teams/project', function(req, res) {
   });
 });
 
+// Enable foreign keys on all all transactions
+db.run('PRAGMA foreign_keys = ON', function(err) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+});
+
+// Start the server
 var server = app.listen(3000, function() {
   var host = server.address().address;
   var port = server.address().port;
