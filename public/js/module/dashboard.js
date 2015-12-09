@@ -159,7 +159,6 @@ app.module(function(E, ajax) {
 
         var body = E('div', {
           className: 'panel-body',
-          parent: panel
         });
 
         E('p', {
@@ -185,7 +184,13 @@ app.module(function(E, ajax) {
           parent: body
         });
 
-        teams(body, project);
+        teams(body, project).then(function() {
+          panel.appendChild(body);
+          body.animate([
+            {opacity: 0},
+            {opacity: 1}
+          ]);
+        });
       });
     });
   }
@@ -233,8 +238,8 @@ app.module(function(E, ajax) {
       parent: container
     });
 
-    ajax.get('teams/project', {
-      project_id: project.id  
+    return ajax.get('teams/project', {
+      project_id: project.id
     }).then(function(teams) {
       var currentTeam = null;
       teams.forEach(function(team) {
