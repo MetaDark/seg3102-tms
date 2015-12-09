@@ -86,7 +86,7 @@ app.module(function(E, ajax) {
         className: 'btn btn-default',
         textContent: 'Create',
         onclick: function() {
-          editProject(null);
+          editProject({});
         },
         parent: section
       });
@@ -172,12 +172,12 @@ app.module(function(E, ajax) {
 
   function editProject(project) {
     var modal = new Modal({
-      title: project ? 'Edit' : 'Create' + ' Project'
+      title: project.id ? 'Edit' : 'Create' + ' Project'
     });
 
     form({
       action: 'project',
-      method: project ? 'post' : 'put',
+      method: project.id ? 'post' : 'put',
       defaults: project,
       inputs: [{
         param: 'name',
@@ -196,7 +196,7 @@ app.module(function(E, ajax) {
         type: 'number'
       }],
       submit: {
-        label: project ? 'Save' : 'Create',
+        label: project.id ? 'Save' : 'Create',
         then: function() {
           app.reload();
           modal.close()
@@ -257,7 +257,7 @@ app.module(function(E, ajax) {
       parent: section
     });
 
-    ajax.get('teams', {
+    ajax.get('teams/project', {
       project_id: project.id
     }).then(function(teams) {
       teams.forEach(function (team) {
@@ -286,19 +286,19 @@ app.module(function(E, ajax) {
 
   function editTeam(team) {
     var modal = new Modal({
-      title: team ? 'Edit' : 'Create' + ' Team'
+      title: team.id ? 'Edit' : 'Create' + ' Team'
     });
 
     form({
       action: 'team',
-      method: team ? 'post' : 'put',
+      method: team.id ? 'post' : 'put',
       defaults: team,
       inputs: [{
         param: 'name',
         label: 'Name'
       }],
       submit: {
-        label: team ? 'Save' : 'Create',
+        label: team.id ? 'Save' : 'Create',
         then: function() {
           app.reload();
           modal.close()

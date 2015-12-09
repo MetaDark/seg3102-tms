@@ -422,21 +422,28 @@ app.post('/ajax/team/leave', function(req, res) {
   res.send('Left Team');
 });
 
-/* List Teams */
-app.get('/ajax/teams', function(req, res) {
+/* List Teams in a project */
+app.get('/ajax/teams/project', function(req, res) {
   if (!req.session.user) {
     res.status(401).json();
     return;
   }
 
-  var query =
-        'SELECT teams.* ' +
-        'FROM teams, team_members WHERE ' +
-        'team_members.member_id = $user_id AND ' +
-        'team_members.team_id = teams.id';
+  var params = req.query;
+  var invalid = [];
 
+  if (!params.project_id)  {
+    invalid.push('project_id');
+  }
+
+  if (invalid.length > 0) {
+    res.status(400).json({invalid: invalid});
+    return;
+  }
+  
+  var query = 'SELECT * FROM teams WHERE project_id = $project_id';
   db.all(query, {
-    $user_id: req.session.user.id
+    $project_id: params.project_id,
   }, function(err, teams) {
     if (err) {
       console.log(err);
