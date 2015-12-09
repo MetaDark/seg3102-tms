@@ -167,7 +167,7 @@ app.module(function(E, ajax) {
           parent: panel
         });
 
-        E('p', {
+        E('div', {
           children: [E('b', {
             textContent: 'Description: '
           }), project.description],
@@ -179,7 +179,7 @@ app.module(function(E, ajax) {
               project.max_team_size;
         teamSize += ' members';
 
-        E('p', {
+        E('div', {
           children: [E('b', {
             textContent: 'Team Size: '
           }), teamSize],
@@ -328,22 +328,20 @@ app.module(function(E, ajax) {
           parent: panel
         });
 
-        var liason = E('p', {
-          children: [E('b', {
-            textContent: 'Liason: '
-          }), team.liason_name],
+        E('b', {
+          textContent: 'Members:',
           parent: body
         });
-
-        var liason = E('p', {
-          children: [E('b', {
-            textContent: 'Members: '
-          }), team.members.length === 0 ? 'No other members' : ''],
+        
+        E('div', {
+          children: [team.liason_name, E('b', {
+            textContent: ' (Liason)'
+          }), ],
           parent: body
         });
         
         team.members.forEach(function(member) {
-          var memberElem = E('p', {
+          var memberElem = E('div', {
             textContent: member.name,
             parent: body
           });
